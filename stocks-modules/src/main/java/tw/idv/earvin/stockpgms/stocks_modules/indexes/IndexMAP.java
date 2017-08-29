@@ -1,7 +1,12 @@
 package tw.idv.earvin.stockpgms.stocks_modules.indexes;
 
 public class IndexMAP {
-
+	
+	/**
+	 * Calculate the average value of volume and main value.
+	 * @param sd 股票資料
+	 * @param indexDay 技術指標天數
+	 */
 	public void calculateMAP(StocksData[] sd, int indexDay) {
 		for (int i = 0; i < sd.length; i++) {
 			double average = 0;
