@@ -183,6 +183,18 @@ public class StocksData {
 
 		return sd;
 	}
+	
+	public String printData() {
+		String theString = "";
+		theString = "Date= " + getTradeDate() + 
+				", StockNo= " + getStockNo() +
+				", StartPrice= " + getStartPrice() +
+				", HighPrice= " + getHighPrice() +
+				", LowPrice= " + getLowPrice() +
+				", EndPrice= " + getEndPrice() +
+				", Volume= " + getVolume();
+		return theString;
+	}
 
 	public static void main(String[] args) {
 		/*
