@@ -15,6 +15,7 @@ public class IndexMAP {
 	public static StocksData[] calculateMAP(String stockNo) {
 		String SQL_1 = "SELECT COUNT(*) AS COUNTS FROM TAIWAN_DATA_POLARIS WHERE STOCK_NO = ? ";
 		String SQL_2 = "SELECT STOCK_NO, DATE, START_PRICE, HIGH_PRICE, LOW_PRICE, END_PRICE, VOLUME FROM TAIWAN_DATA_POLARIS WHERE STOCK_NO = ? ORDER BY DATE ";
+		String SQL_3 = "INSERT INTO TAIWAN_DATA_POLARIS_INDEXES_VALUES (STOCK_NO, INDEX_CODE, DATE, VALUE) VALUES (?, ?, ?, ?) ";
 		int indexDay = 5;
 		int counts = 100;
 		StocksData[] sd = null;
@@ -48,7 +49,7 @@ public class IndexMAP {
 				
 				System.out.println(sd[i].printData()); 				
 			}
-/*			
+			
 			for (int i = 0; i < sd.length; i++) {
 				double average = 0;
 				if (i < indexDay) {
@@ -62,9 +63,17 @@ public class IndexMAP {
 					}
 					average /= indexDay;				
 				}
-				System.out.println("the average[" + i + "]= " + average);
+				System.out.println(sd[i].printData() + " -- the average= " + average);
+				// insert to db
+				pstmt = conn.prepareStatement(SQL_3);
+				pstmt.setString(1, sd[i].getStockNo());
+				pstmt.setInt(2, 1001);
+				pstmt.setLong(3, sd[i].getTradeDate());
+				pstmt.setDouble(4, average);
+//				pstmt.
+
 			}			
-*/
+
 			pstmt.close();
 			if (!conn.isClosed()) {
 				conn.close();
