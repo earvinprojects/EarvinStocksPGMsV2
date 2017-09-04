@@ -70,8 +70,7 @@ public class IndexMAP {
 				pstmt.setInt(2, 1001);
 				pstmt.setLong(3, sd[i].getTradeDate());
 				pstmt.setDouble(4, average);
-//				pstmt.
-
+				pstmt.executeUpdate();
 			}			
 
 			pstmt.close();
