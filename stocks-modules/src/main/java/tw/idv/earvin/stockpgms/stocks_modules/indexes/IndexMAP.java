@@ -8,13 +8,32 @@ import java.sql.SQLException;
 
 public class IndexMAP {
 
+	// 20170906 取得股票資料(data from TAIWAN_DATA_POLARIS)
+	private StocksData[] getStocksData(String stockNo) {
+		StocksData[] sd = null;
+		
+		return sd;
+	}
+	
+	// 20170906 計算MAP技術指標資料
+	public StocksData[] calculateMAP(String stockNo, int indexDay) {
+		StocksData[] sd = getStocksData(stockNo);
+		
+		return sd;
+	}
+	
+	// 新增  or 異動MAP技術指標資料(TAIWAN_DATA_POLARIS_INDEXES_VALUES)
+	public void updateMAP(StocksData[] sd) {
+		
+	}
+	
 	/**
 	 * Calculate the average value of volume and main value.
 	 * 
 	 * @param stockNo
 	 *            股票代號
 	 */
-	public static StocksData[] calculateMAP(String stockNo) {
+	public static StocksData[] calculateMAP2(String stockNo) {
 		String SQL_GET_TAIWAN_DATA_POLARIS_COUNTS_BY_STOCK_NO = "SELECT COUNT(*) AS COUNTS FROM TAIWAN_DATA_POLARIS WHERE STOCK_NO = ? ";
 		String SQL_QUERY_TAIWAN_DATA_POLARIS_BY_PK = "SELECT STOCK_NO, DATE, START_PRICE, HIGH_PRICE, LOW_PRICE, END_PRICE, VOLUME FROM TAIWAN_DATA_POLARIS WHERE STOCK_NO = ? ORDER BY DATE ";
 		String SQL_QUERY_TAIWAN_DATA_POLARIS_INDEXES_VALUES_BY_PK = "SELECT * FROM TAIWAN_DATA_POLARIS_INDEXES_VALUES WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
@@ -135,6 +154,6 @@ public class IndexMAP {
 
 	public static void main(String[] args) {
 		// StocksData[] sd = calculateMAP("2002");
-		StocksData[] sd = calculateMAP("2349");
+		// StocksData[] sd = calculateMAP("2349");
 	}
 }
