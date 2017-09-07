@@ -6,23 +6,56 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import tw.idv.earvin.stockpgms.stocks_modules.tables.TaiwanDataPolarisIndexesValues;
+
 public class IndexMAP {
 
-	// 20170906 取得股票資料(data from TAIWAN_DATA_POLARIS)
+	// TODO 20170906 取得股票資料(data from TAIWAN_DATA_POLARIS)
 	private StocksData[] getStocksData(String stockNo) {
 		StocksData[] sd = null;
 		
 		return sd;
 	}
 	
-	// 20170906 計算MAP技術指標資料
+	public TaiwanDataPolarisIndexesValues[] calculateMAP(StocksData[] sd, int indexDay) {
+		TaiwanDataPolarisIndexesValues[] indexData = null;
+		
+		if (sd.length > 0) {
+			indexData= new TaiwanDataPolarisIndexesValues[sd.length];
+		}
+		// Calculate the MAP
+		for (int i = 0; i < sd.length; i++) {
+			double average = 0;
+			if (i < indexDay) {
+				for (int j = 0; j <= i; j++) {
+					average += sd[i - j].getEndPrice();
+				}
+				average /= (i + 1);
+			} else {
+				for (int j = 0; j < indexDay; j++) {
+					average += sd[i - j].getEndPrice();
+				}
+				average /= indexDay;
+			}
+			System.out.println(sd[i].printData() + " -- the average= " + average);
+			indexData[i] = new TaiwanDataPolarisIndexesValues();
+			indexData[i].setDate(sd[i].getDate());
+			indexData[i].setIndexCode(1001);
+			indexData[i].setStockNo(sd[i].getStockNo());
+			indexData[i].setValue(average);
+		}
+		
+		return indexData;
+	}
+	
+	// TODO 20170906 計算MAP技術指標資料
 	public StocksData[] calculateMAP(String stockNo, int indexDay) {
 		StocksData[] sd = getStocksData(stockNo);
 		
 		return sd;
 	}
 	
-	// 新增  or 異動MAP技術指標資料(TAIWAN_DATA_POLARIS_INDEXES_VALUES)
+	// TODO 新增  or 異動MAP技術指標資料(TAIWAN_DATA_POLARIS_INDEXES_VALUES)
 	public void updateMAP(StocksData[] sd) {
 		
 	}
@@ -65,7 +98,7 @@ public class IndexMAP {
 				rs.next();
 				sd[i] = new StocksData();
 				sd[i].setStockNo(rs.getString("STOCK_NO"));
-				sd[i].setTradeDate(rs.getInt("DATE"));
+				sd[i].setDate(rs.getInt("DATE"));
 				sd[i].setStartPrice(rs.getDouble("START_PRICE"));
 				sd[i].setHighPrice(rs.getDouble("HIGH_PRICE"));
 				sd[i].setLowPrice(rs.getDouble("LOW_PRICE"));
@@ -92,7 +125,7 @@ public class IndexMAP {
 				pstmt = conn.prepareStatement(SQL_QUERY_TAIWAN_DATA_POLARIS_INDEXES_VALUES_BY_PK);
 				pstmt.setString(1, sd[i].getStockNo());
 				pstmt.setInt(2, 1001);
-				pstmt.setLong(3, sd[i].getTradeDate());
+				pstmt.setLong(3, sd[i].getDate());
 				rs = pstmt.executeQuery();
 				if (rs.next()) {
 					// update
@@ -100,14 +133,14 @@ public class IndexMAP {
 					pstmt.setDouble(1, average);
 					pstmt.setString(2, sd[i].getStockNo());
 					pstmt.setInt(3, 1001);
-					pstmt.setLong(4, sd[i].getTradeDate());
+					pstmt.setLong(4, sd[i].getDate());
 					updateCount += 1;
 				} else {
 					// insert
 					pstmt = conn.prepareStatement(SQL_INSERT_TAIWAN_DATA_POLARIS_INDEXES_VALUES);
 					pstmt.setString(1, sd[i].getStockNo());
 					pstmt.setInt(2, 1001);
-					pstmt.setLong(3, sd[i].getTradeDate());
+					pstmt.setLong(3, sd[i].getDate());
 					pstmt.setDouble(4, average);
 					insertCount += 1;
 				}
@@ -126,7 +159,7 @@ public class IndexMAP {
 	}
 
 	/**
-	 * 更新日期：2017.08.21 新增技術指標的值到：TAIWAN_DATA_POLARIS_INDEXES_VALUES
+	 * TODO 更新日期：2017.08.21 新增技術指標的值到：TAIWAN_DATA_POLARIS_INDEXES_VALUES
 	 * 
 	 * @param sd
 	 */

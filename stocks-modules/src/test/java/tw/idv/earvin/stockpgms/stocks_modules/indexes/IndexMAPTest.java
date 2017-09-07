@@ -11,11 +11,11 @@ public class IndexMAPTest {
 		IndexMAP indexMap = new IndexMAP();
 
 	}
-	@Test
-	public void testAdd() {
-		IndexMAP indexMap = new IndexMAP();
-		StocksData[] sd = calculateMAP("2349");
-		double result = calculator.add(10, 50);
-		assertEquals(60, result, 0);
+	
+//	@Test
+	public void calculateMAP2Test() {
+//		IndexMAP indexMap = new IndexMAP();
+//		StocksData[] sd = calculateMAP2("2349");
+//		assertEquals(60, result, 0);
 	}
 }

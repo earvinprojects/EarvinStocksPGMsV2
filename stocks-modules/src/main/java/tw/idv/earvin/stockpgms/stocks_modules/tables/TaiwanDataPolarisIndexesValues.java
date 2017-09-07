@@ -40,6 +40,7 @@ public class TaiwanDataPolarisIndexesValues {
 		value = v;
 	}
 
+	// TODO
 	public Vector queryByPK() {
 		// Vector轉Array
 		// String[] arr = (String[]) tmp.toAarray(new String[0]);
