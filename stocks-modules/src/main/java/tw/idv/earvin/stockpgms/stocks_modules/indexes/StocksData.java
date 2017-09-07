@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class StocksData {
-	private long tradeDate;
+	private long date;
 	private String stockNo;
 	private double startPrice;
 	private double highPrice;
@@ -29,12 +29,12 @@ public class StocksData {
 
 	private static String SQL_SELECT_TAIWAN_DATA_POLARIS = "SELECT DATE, START_PRICE, HIGH_PRICE, LOW_PRICE, END_PRICE, VOLUME FROM TAIWAN_DATA_POLARIS WHERE STOCK_NO = ? ORDER BY DATE ";
 
-	public long getTradeDate() {
-		return tradeDate;
+	public long getDate() {
+		return date;
 	}
 
-	public void setTradeDate(long v) {
-		tradeDate = v;
+	public void setDate(long v) {
+		date = v;
 	}
 
 	public String getStockNo() {
@@ -186,7 +186,7 @@ public class StocksData {
 	
 	public String printData() {
 		String theString = "";
-		theString = "Date= " + getTradeDate() + 
+		theString = "Date= " + getDate() + 
 				", StockNo= " + getStockNo() +
 				", StartPrice= " + getStartPrice() +
 				", HighPrice= " + getHighPrice() +
