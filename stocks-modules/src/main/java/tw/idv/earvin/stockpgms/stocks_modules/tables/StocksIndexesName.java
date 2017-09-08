@@ -1,5 +1,13 @@
 package tw.idv.earvin.stockpgms.stocks_modules.tables;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import tw.idv.earvin.stockpgms.stocks_modules.indexes.StocksData;
+
 public class StocksIndexesName {
 	private long indexCode;
 	private String indexName;
@@ -29,11 +37,27 @@ public class StocksIndexesName {
 		description = v;
 	}
 
-	// TODO
+	
 	public static long getIndexCode(String indexName) {
 		long indexCode = 0;
-		String sql = "SELECT INDEX_CODE FROM STOCK_INDEXES_NAME WHERE INDEX_NAME = ? ";
-
+		String SQL = "SELECT INDEX_CODE FROM STOCKS_INDEXES_NAME WHERE INDEX_NAME = ? ";
+		try {
+			// 取得筆數
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/stocksdb", "root", "lin32ledi");
+			PreparedStatement pstmt = conn.prepareStatement(SQL);
+			pstmt.setString(1, indexName);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				indexCode = rs.getInt("INDEX_CODE");
+			}
+			System.out.println(indexName + " 代碼為 " + indexCode);
+			pstmt.close();
+			if (!conn.isClosed()) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return indexCode;
 	}
 }
