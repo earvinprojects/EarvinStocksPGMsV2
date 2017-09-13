@@ -71,7 +71,7 @@ public class IndexRWMS {
 	}
 
 	// TODO 新增 or 異動RWMS技術指標資料(TAIWAN_DATA_POLARIS_INDEXES_VALUES)
-	public void updateRWMS(StocksData[] sd) {
+	public void updateRWMS(TaiwanDataPolarisIndexesValues[] indexData) {
 	}
 
 	/**
