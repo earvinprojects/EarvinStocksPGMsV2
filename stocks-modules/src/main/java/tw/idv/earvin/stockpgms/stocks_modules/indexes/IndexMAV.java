@@ -9,7 +9,8 @@ import java.sql.SQLException;
 import tw.idv.earvin.stockpgms.stocks_modules.tables.StocksIndexesName;
 import tw.idv.earvin.stockpgms.stocks_modules.tables.TaiwanDataPolarisIndexesValues;
 
-public class IndexMAP {
+public class IndexMAV {
+
 
 	// TODO 20170906 取得股票資料(data from TAIWAN_DATA_POLARIS)
 	private StocksData[] getStocksData(String stockNo) {
@@ -18,23 +19,23 @@ public class IndexMAP {
 		return sd;
 	}
 	
-	public TaiwanDataPolarisIndexesValues[] calculateMAP(StocksData[] sd, int indexDay) {
+	public TaiwanDataPolarisIndexesValues[] calculateMAV(StocksData[] sd, int indexDay) {
 		TaiwanDataPolarisIndexesValues[] indexData = null;
 		
 		if (sd.length > 0) {
 			indexData= new TaiwanDataPolarisIndexesValues[sd.length];
 		}
-		// Calculate the MAP
+		// Calculate the MAV
 		for (int i = 0; i < sd.length; i++) {
 			double average = 0;
 			if (i < indexDay) {
 				for (int j = 0; j <= i; j++) {
-					average += sd[i - j].getEndPrice();
+					average += sd[i - j].getVolume();
 				}
 				average /= (i + 1);
 			} else {
 				for (int j = 0; j < indexDay; j++) {
-					average += sd[i - j].getEndPrice();
+					average += sd[i - j].getVolume();
 				}
 				average /= indexDay;
 			}
@@ -50,14 +51,14 @@ public class IndexMAP {
 	}
 	
 	// TODO 20170906 計算MAP技術指標資料
-	public StocksData[] calculateMAP(String stockNo, int indexDay) {
+	public StocksData[] calculateMAV(String stockNo, int indexDay) {
 		StocksData[] sd = getStocksData(stockNo);
 		
 		return sd;
 	}
 	
 	// TODO 新增  or 異動MAP技術指標資料(TAIWAN_DATA_POLARIS_INDEXES_VALUES)
-	public void updateMAP(StocksData[] sd) {
+	public void updateMAV(StocksData[] sd) {
 		
 	}
 	
@@ -67,7 +68,7 @@ public class IndexMAP {
 	 * @param stockNo
 	 *            股票代號
 	 */
-	public static StocksData[] CalculateMAPAndInsertToDB(String stockNo, int indexDay) {
+	public static StocksData[] CalculateMAVAndInsertToDB(String stockNo, int indexDay) {
 		String SQL_GET_TAIWAN_DATA_POLARIS_COUNTS_BY_STOCK_NO = "SELECT COUNT(*) AS COUNTS FROM TAIWAN_DATA_POLARIS WHERE STOCK_NO = ? ";
 		String SQL_QUERY_TAIWAN_DATA_POLARIS_BY_PK = "SELECT STOCK_NO, DATE, START_PRICE, HIGH_PRICE, LOW_PRICE, END_PRICE, VOLUME FROM TAIWAN_DATA_POLARIS WHERE STOCK_NO = ? ORDER BY DATE ";
 		String SQL_QUERY_TAIWAN_DATA_POLARIS_INDEXES_VALUES_BY_PK = "SELECT * FROM TAIWAN_DATA_POLARIS_INDEXES_VALUES WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
@@ -80,7 +81,7 @@ public class IndexMAP {
 		StocksData[] sd = null;
 
 		try {
-			long indexCode = StocksIndexesName.getIndexCode("MAP_" + indexDay);
+			long indexCode = StocksIndexesName.getIndexCode("MAV_" + indexDay);
 			// 取得筆數
 			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/stocksdb", "root", "lin32ledi");
 			PreparedStatement pstmt = conn.prepareStatement(SQL_GET_TAIWAN_DATA_POLARIS_COUNTS_BY_STOCK_NO);
@@ -106,17 +107,17 @@ public class IndexMAP {
 				sd[i].setEndPrice(rs.getDouble("END_PRICE"));
 				sd[i].setVolume(rs.getDouble("VOLUME"));
 			}
-			// Calculate the MAP
+			// Calculate the MAV
 			for (int i = 0; i < sd.length; i++) {
 				double average = 0;
 				if (i < indexDay) {
 					for (int j = 0; j <= i; j++) {
-						average += sd[i - j].getEndPrice();
+						average += sd[i - j].getVolume();
 					}
 					average /= (i + 1);
 				} else {
 					for (int j = 0; j < indexDay; j++) {
-						average += sd[i - j].getEndPrice();
+						average += sd[i - j].getVolume();
 					}
 					average /= indexDay;
 				}
@@ -154,7 +155,7 @@ public class IndexMAP {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("作業完成 -- 處理股票代號= " + stockNo + ", 總筆數= " + counts + ", 新增筆數= " + insertCount + ", 更新筆數= "
+		System.out.println("MAV 指標作業完成 -- 處理股票代號= " + stockNo + ", 總筆數= " + counts + ", 新增筆數= " + insertCount + ", 更新筆數= "
 				+ updateCount);
 		return sd;
 	}
@@ -187,16 +188,11 @@ public class IndexMAP {
 	}
 
 	public static void main(String[] args) {
-//		for (int i = 2; i < 366; i++) {
-//			StocksData[] sd = CalculateMAPAndInsertToDB("2002", i);			
-//		}
 		StocksData[] sd = null;
-		sd = CalculateMAPAndInsertToDB("2349", 5);
-		sd = CalculateMAPAndInsertToDB("2349", 30);
-		sd = CalculateMAPAndInsertToDB("2349", 90);
-		sd = CalculateMAPAndInsertToDB("2349", 180);
-		sd = CalculateMAPAndInsertToDB("2349", 360);
-
-		// StocksData[] sd = calculateMAP("2349");
+		sd = CalculateMAVAndInsertToDB("2349", 5);
+		sd = CalculateMAVAndInsertToDB("2349", 30);
+		sd = CalculateMAVAndInsertToDB("2349", 90);
+		sd = CalculateMAVAndInsertToDB("2349", 180);
+		sd = CalculateMAVAndInsertToDB("2349", 360);
 	}
 }
