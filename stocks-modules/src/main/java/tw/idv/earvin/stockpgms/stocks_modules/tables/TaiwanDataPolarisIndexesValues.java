@@ -7,6 +7,8 @@ public class TaiwanDataPolarisIndexesValues {
 	private long indexCode;
 	private long date;
 	private double value;
+	
+	
 
 	public String getStockNo() {
 		return stockNo;
@@ -49,6 +51,7 @@ public class TaiwanDataPolarisIndexesValues {
 		return vc;
 	}
 
+	// TODO 20170914 如何以物件方式儲存資料?? 找實作方式!!
 	public int update() {
 		int result = 0;
 

@@ -29,7 +29,7 @@ public class IndexRWMS {
 			int i = 0, j = 0;
 			double maxValue, minValue, wmsValue;
 
-			while (j <= sd.length) {
+			while (j < sd.length) {
 				maxValue = -1;
 				minValue = 99999999;
 				if (j <= indexDay) {
@@ -204,8 +204,14 @@ public class IndexRWMS {
 	}
 
 	public static void main(String[] args) {
-		StocksData[] sd = null;
-		sd = CalculateRWMSAndInsertToDB("2349", 5);
+		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950201, 951231, "2002");
+		TaiwanDataPolarisIndexesValues[] indexData = calculateRWMS(sd,5);
+		for (int i = 0; i <indexData.length; i++) {
+			System.out.println("Date= " + indexData[i].getDate() + ", index_code= " + indexData[i].getIndexCode() + ", stockno_no= " + indexData[i].getStockNo() + ", index_value= " + indexData[i].getValue());
+			// insert TaiwanData_Polaris_Indexes_Values
+		}
+
+//		sd = CalculateRWMSAndInsertToDB("2349", 5);
 //		sd = CalculateRWMSAndInsertToDB("2349", 30);
 //		sd = CalculateRWMSAndInsertToDB("2349", 90);
 //		sd = CalculateRWMSAndInsertToDB("2349", 180);
