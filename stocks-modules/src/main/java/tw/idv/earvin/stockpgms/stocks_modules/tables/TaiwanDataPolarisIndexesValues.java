@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
-
 import tw.idv.earvin.stockpgms.stocks_modules.db.DatabaseImp;
 
 public class TaiwanDataPolarisIndexesValues {
@@ -15,12 +14,10 @@ public class TaiwanDataPolarisIndexesValues {
 	private long date;
 	private double value;
 
-	private String SQL_QUERY_BY_PK = "SELECT * FROM TAIWAN_DATA_POLARIS_INDEXES_VALUES WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
-	private String SQL_UPDATE_BY_PK = "UPDATE TAIWAN_DATA_POLARIS_INDEXES_VALUES SET VALUE = ? WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
-	private String SQL_INSERT = "INSERT INTO TAIWAN_DATA_POLARIS_INDEXES_VALUES (STOCK_NO, INDEX_CODE, DATE, VALUE) VALUES ( ?, ?, ?, ?) ";
+	private static String SQL_QUERY_BY_PK = "SELECT * FROM TAIWAN_DATA_POLARIS_INDEXES_VALUES WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
+	private static String SQL_UPDATE_BY_PK = "UPDATE TAIWAN_DATA_POLARIS_INDEXES_VALUES SET VALUE = ? WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
+	private static String SQL_INSERT = "INSERT INTO TAIWAN_DATA_POLARIS_INDEXES_VALUES (STOCK_NO, INDEX_CODE, DATE, VALUE) VALUES ( ?, ?, ?, ?) ";
 
-	
-	
 	public String getStockNo() {
 		return stockNo;
 	}
@@ -53,54 +50,71 @@ public class TaiwanDataPolarisIndexesValues {
 		value = v;
 	}
 
-	
- 	
-	// TODO
-	public Vector<TaiwanDataPolarisIndexesValues> queryByPK() {
-		Vector<TaiwanDataPolarisIndexesValues> vc = new Vector<TaiwanDataPolarisIndexesValues>();
-		
+	public static boolean hasData(TaiwanDataPolarisIndexesValues vo) {
+		boolean hasData = false;
 		Connection con = DatabaseImp.getConnection();
 		try {
 			PreparedStatement pstmt = con.prepareStatement(SQL_QUERY_BY_PK);
-			pstmt.setString(1, getStockNo());
-			pstmt.setLong(2,getIndexCode());
-			pstmt.setLong(3, getDate());
+			pstmt.setString(1, vo.getStockNo());
+			pstmt.setLong(2, vo.getIndexCode());
+			pstmt.setLong(3, vo.getDate());
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				vc.add(this);
+				hasData = true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return vc;
+		return hasData;
 	}
 
-	// TODO 20170914 如何以物件方式儲存資料?? 找實作方式!!
-	public int update() {
+	public static int update(TaiwanDataPolarisIndexesValues vo) {
 		int result = 0;
-		Vector<TaiwanDataPolarisIndexesValues> vc = new Vector<TaiwanDataPolarisIndexesValues>();
-	
-		if (vc.size() > 0) {
-			// 更新資料
-			
-		} else {
-			// 新增資料
-			
+		Connection con = DatabaseImp.getConnection();
+		try {
+			PreparedStatement pstmt = con.prepareStatement(SQL_UPDATE_BY_PK);
+			pstmt.setDouble(1, vo.getValue());
+			pstmt.setString(2, vo.getStockNo());
+			pstmt.setLong(3, vo.getIndexCode());
+			pstmt.setLong(4, vo.getDate());
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-
 		return result;
 	}
 
-	public static void main(String[] args) {
-		//20170917 TODO
-		TaiwanDataPolarisIndexesValues theData = new TaiwanDataPolarisIndexesValues();
-		theData.setDate(1060821);
-		theData.setIndexCode(1005);
-		theData.setStockNo("2349");
-		theData.setValue(0);
-
-		Vector<TaiwanDataPolarisIndexesValues> vc = queryByPK();
-		
+	public static int insert(TaiwanDataPolarisIndexesValues vo) {
+		int result = 0;
+		Connection con = DatabaseImp.getConnection();
+		try {
+			PreparedStatement pstmt = con.prepareStatement(SQL_INSERT);
+			pstmt.setString(1, vo.getStockNo());
+			pstmt.setLong(2, vo.getIndexCode());
+			pstmt.setLong(3, vo.getDate());
+			pstmt.setDouble(4, vo.getValue());
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
+	
+	public static String print(TaiwanDataPolarisIndexesValues vo) {
+		String thePrintString = "";
+		thePrintString = "StockNo= " + vo.getStockNo() + ", IndexCode= " + vo.getIndexCode() + ", Date= " + vo.getDate() + ", Value= " + vo.getValue();
+		return thePrintString;
+	}
+	
+	public static void main(String[] args) {
+		TaiwanDataPolarisIndexesValues theVO = new TaiwanDataPolarisIndexesValues();
+		theVO.setDate(1070101);
+		theVO.setIndexCode(1005);
+		theVO.setStockNo("2349");
+		theVO.setValue(199.99);
 
+//		System.out.println("The value is " + TaiwanDataPolarisIndexesValues.insert(theVO));
+		System.out.println("The value is " + TaiwanDataPolarisIndexesValues.update(theVO));
+		System.out.println("The value is " + TaiwanDataPolarisIndexesValues.print(theVO));
+	}
 }
