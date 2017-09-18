@@ -13,6 +13,7 @@ public class TaiwanDataPolarisIndexesValues {
 	private long indexCode;
 	private long date;
 	private double value;
+	private static Connection con = null; 
 
 	private static String SQL_QUERY_BY_PK = "SELECT * FROM TAIWAN_DATA_POLARIS_INDEXES_VALUES WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
 	private static String SQL_UPDATE_BY_PK = "UPDATE TAIWAN_DATA_POLARIS_INDEXES_VALUES SET VALUE = ? WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
@@ -50,9 +51,28 @@ public class TaiwanDataPolarisIndexesValues {
 		value = v;
 	}
 
+	public int update() {
+		System.out.println("[Call TaiwanDataPolarisIndexesValues vo.update()] -- ");
+		return update(this);
+	}
+
+	public int insert() {
+		System.out.println("[Call TaiwanDataPolarisIndexesValues vo.insert()] -- ");
+		return insert(this);
+	}
+
+	// -- Static Functions ---------------------------------------------------//
+
 	public static boolean hasData(TaiwanDataPolarisIndexesValues vo) {
+//		Connection con = DatabaseImp.getConnection();
+		if (con == null) {
+			con = DatabaseImp.getConnection();
+		}	
+		return hasData(con, vo);
+	}
+
+	public static boolean hasData(Connection con, TaiwanDataPolarisIndexesValues vo) {
 		boolean hasData = false;
-		Connection con = DatabaseImp.getConnection();
 		try {
 			PreparedStatement pstmt = con.prepareStatement(SQL_QUERY_BY_PK);
 			pstmt.setString(1, vo.getStockNo());
@@ -69,8 +89,16 @@ public class TaiwanDataPolarisIndexesValues {
 	}
 
 	public static int update(TaiwanDataPolarisIndexesValues vo) {
+//		Connection con = DatabaseImp.getConnection();
+		if (con == null) {
+			con = DatabaseImp.getConnection();
+		}
+		return update(con, vo);
+	}
+
+	public static int update(Connection con, TaiwanDataPolarisIndexesValues vo) {
+		System.out.println("[Call TaiwanDataPolarisIndexesValues.update()] -- ");
 		int result = 0;
-		Connection con = DatabaseImp.getConnection();
 		try {
 			PreparedStatement pstmt = con.prepareStatement(SQL_UPDATE_BY_PK);
 			pstmt.setDouble(1, vo.getValue());
@@ -85,8 +113,16 @@ public class TaiwanDataPolarisIndexesValues {
 	}
 
 	public static int insert(TaiwanDataPolarisIndexesValues vo) {
+//		Connection con = DatabaseImp.getConnection();
+		if (con == null) {
+			con = DatabaseImp.getConnection();
+		}
+		return insert(con, vo);
+	}
+
+	public static int insert(Connection con, TaiwanDataPolarisIndexesValues vo) {
+		System.out.println("[Call TaiwanDataPolarisIndexesValues.insert()] -- ");
 		int result = 0;
-		Connection con = DatabaseImp.getConnection();
 		try {
 			PreparedStatement pstmt = con.prepareStatement(SQL_INSERT);
 			pstmt.setString(1, vo.getStockNo());
@@ -99,22 +135,25 @@ public class TaiwanDataPolarisIndexesValues {
 		}
 		return result;
 	}
-	
+
 	public static String print(TaiwanDataPolarisIndexesValues vo) {
 		String thePrintString = "";
-		thePrintString = "StockNo= " + vo.getStockNo() + ", IndexCode= " + vo.getIndexCode() + ", Date= " + vo.getDate() + ", Value= " + vo.getValue();
+		thePrintString = "StockNo= " + vo.getStockNo() + ", IndexCode= " + vo.getIndexCode() + ", Date= " + vo.getDate()
+				+ ", Value= " + vo.getValue();
 		return thePrintString;
 	}
-	
+
 	public static void main(String[] args) {
 		TaiwanDataPolarisIndexesValues theVO = new TaiwanDataPolarisIndexesValues();
 		theVO.setDate(1070101);
 		theVO.setIndexCode(1005);
 		theVO.setStockNo("2349");
-		theVO.setValue(199.99);
-
-//		System.out.println("The value is " + TaiwanDataPolarisIndexesValues.insert(theVO));
-		System.out.println("The value is " + TaiwanDataPolarisIndexesValues.update(theVO));
-		System.out.println("The value is " + TaiwanDataPolarisIndexesValues.print(theVO));
+		theVO.setValue(299.99);
+//		System.out.println("The value is " + theVO.insert());
+		System.out.println("The value is " + theVO.update());
+		// System.out.println("The value is " +
+		// TaiwanDataPolarisIndexesValues.insert(theVO));
+//		System.out.println("The value is " + TaiwanDataPolarisIndexesValues.update(theVO));
+//		System.out.println("The value is " + TaiwanDataPolarisIndexesValues.print(theVO));
 	}
 }
