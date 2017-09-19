@@ -22,7 +22,8 @@ public class IndexRWMS {
 		TaiwanDataPolarisIndexesValues[] indexData = null;
 
 		long indexCode = StocksIndexesName.getIndexCode("RWMS_" + indexDay);
-
+		System.out.println("[IndexRWMS.calculateRWMS(...)] -- IndexCode(RWMS, " + indexDay + ") = " + indexCode);
+		
 		if (sd.length > 0) {
 			indexData = new TaiwanDataPolarisIndexesValues[sd.length];
 			// Calculate the RWMS index
@@ -32,8 +33,8 @@ public class IndexRWMS {
 			while (j < sd.length) {
 				maxValue = -1;
 				minValue = 99999999;
-				if (j <= indexDay) {
-					for (i = 1; i < j; i++) {
+				if (j < indexDay) {
+					for (i = 0; i <= j; i++) {
 						if (maxValue < sd[i].getHighPrice()) {
 							maxValue = sd[i].getHighPrice();
 						}
@@ -42,7 +43,7 @@ public class IndexRWMS {
 						}
 					}
 				} else {
-					for (i = j; i < (j - indexDay); i--) {
+					for (i = j; i > (j - indexDay); i--) {
 						if (maxValue < sd[i].getHighPrice()) {
 							maxValue = sd[i].getHighPrice();
 						}
@@ -57,7 +58,7 @@ public class IndexRWMS {
 					wmsValue = 50;
 				}
 
-				System.out.println(sd[j].printData() + " -- the wms value = " + (100 - wmsValue));
+				System.out.println(j + ", maxValue= " + maxValue + ", minValue= " + minValue + " -- " + sd[j].printData() + " -- the rwms value = " + (100 - wmsValue));
 				indexData[j] = new TaiwanDataPolarisIndexesValues();
 				indexData[j].setDate(sd[i].getDate());
 				indexData[j].setIndexCode(indexCode);
@@ -201,13 +202,20 @@ public class IndexRWMS {
 	 * @param sd
 	 */
 	public void insertRWMS(StocksData[] sd) {
+		TaiwanDataPolarisIndexesValues[] indexData = calculateRWMS(sd, 5);
+		for (int i = 0; i < indexData.length; i++) {
+			indexData[i].insert();
+		}
+		
 	}
 
 	public static void main(String[] args) {
 		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950201, 951231, "2002");
 		TaiwanDataPolarisIndexesValues[] indexData = calculateRWMS(sd,5);
 		for (int i = 0; i <indexData.length; i++) {
-			System.out.println("Date= " + indexData[i].getDate() + ", index_code= " + indexData[i].getIndexCode() + ", stockno_no= " + indexData[i].getStockNo() + ", index_value= " + indexData[i].getValue());
+//			System.out.println("Date= " + indexData[i].getDate() + ", index_code= " + indexData[i].getIndexCode() + ", stockno_no= " + indexData[i].getStockNo() + ", index_value= " + indexData[i].getValue());
+			System.out.println(i + ", value= " + indexData[i].print());
+//			indexData[i].insert();
 			// insert TaiwanData_Polaris_Indexes_Values
 		}
 

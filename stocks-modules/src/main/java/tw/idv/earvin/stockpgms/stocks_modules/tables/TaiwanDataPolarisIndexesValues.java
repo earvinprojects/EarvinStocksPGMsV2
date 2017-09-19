@@ -61,6 +61,10 @@ public class TaiwanDataPolarisIndexesValues {
 		return insert(this);
 	}
 
+	public String print() {
+		return print(this);
+	}
+
 	// -- Static Functions ---------------------------------------------------//
 
 	public static boolean hasData(TaiwanDataPolarisIndexesValues vo) {
@@ -106,6 +110,7 @@ public class TaiwanDataPolarisIndexesValues {
 			pstmt.setLong(3, vo.getIndexCode());
 			pstmt.setLong(4, vo.getDate());
 			result = pstmt.executeUpdate();
+			pstmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -130,6 +135,7 @@ public class TaiwanDataPolarisIndexesValues {
 			pstmt.setLong(3, vo.getDate());
 			pstmt.setDouble(4, vo.getValue());
 			result = pstmt.executeUpdate();
+			pstmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
