@@ -1,6 +1,9 @@
 package tw.idv.earvin.stockpgms.stocks_modules.indexes;
 
 import java.util.Vector;
+
+import tw.idv.earvin.stockpgms.stocks_modules.db.DatabaseImp;
+
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,12 +30,11 @@ public class StocksData {
 	private double legalPersonStock; // 法人庫存
 	private double openInterestStock; // 未平倉量
 
-	private static String SQL_SELECT_TAIWAN_DATA_POLARIS_BY_STOCK_NO = "SELECT DATE, START_PRICE, HIGH_PRICE, LOW_PRICE, END_PRICE, VOLUME FROM TAIWAN_DATA_POLARIS WHERE STOCK_NO = ? ORDER BY DATE ";
-	// private static String
-	// SQL_SELECT_TAIWAN_DATA_POLARIS_BY_STOCK_NO_AND_TWO_DATES = "SELECT DATE,
-	// START_PRICE, HIGH_PRICE, LOW_PRICE, END_PRICE, VOLUME FROM
-	// TAIWAN_DATA_POLARIS WHERE DATE BETWEEN ? AND ? AND STOCK_NO = ? ORDER BY DATE
-	// ";
+	private static String SQL_SELECT_TAIWAN_DATA_POLARIS_BY_STOCK_NO = "SELECT A.DATE, A.STOCK_NO, A.STOCK_NAME, A.START_PRICE, A.HIGH_PRICE, A.LOW_PRICE, A.END_PRICE, A.VOLUME, "
+			+ "B.SHORT_SELLING, B.ADVANCE_DECLINE_LINE, B.UP_DOWN_FIRMS, B.FOREIGN_STOCK, B.SIT_AND_CB_STOCK, B.SELF_EMPLOYED_STOCK, B.LEGAL_PERSON_STOCK, B.OPEN_INTEREST_STOCK "
+			+ "FROM TAIWAN_DATA_POLARIS A " + "LEFT OUTER JOIN TAIWAN_DATA_POLARIS_STOCKS B "
+			+ "ON A.DATE = B.DATE AND A.STOCK_NO = B.STOCK_NO "
+			+ "WHERE A.STOCK_NO = ? ORDER BY A.DATE ";
 	private static String SQL_SELECT_TAIWAN_DATA_POLARIS_BY_STOCK_NO_AND_TWO_DATES = "SELECT A.DATE, A.STOCK_NO, A.STOCK_NAME, A.START_PRICE, A.HIGH_PRICE, A.LOW_PRICE, A.END_PRICE, A.VOLUME, "
 			+ "B.SHORT_SELLING, B.ADVANCE_DECLINE_LINE, B.UP_DOWN_FIRMS, B.FOREIGN_STOCK, B.SIT_AND_CB_STOCK, B.SELF_EMPLOYED_STOCK, B.LEGAL_PERSON_STOCK, B.OPEN_INTEREST_STOCK "
 			+ "FROM TAIWAN_DATA_POLARIS A " + "LEFT OUTER JOIN TAIWAN_DATA_POLARIS_STOCKS B "
@@ -168,43 +170,23 @@ public class StocksData {
 	}
 
 	/**
-	 * -- NOT FINISH -- 以股票代號取得指定的股票資料(資料來源：TAIWAN_DATA_POLARIS)
-	 * 
+	 * 依「股票代號」至資料庫抓取資料 (資料來源：TAIWAN_DATA_POLARIS & TAIWAN_DATA_POLARIS_STOCKS)
+	 * startDate = 0 and endDate = 99999999 表示抓所有的資料
 	 * @param stockNo
 	 *            股票代號
-	 * @return 查詢的股票資料
+	 * @return Array
 	 */
-	public static Vector getStocksDataByStockNo(String stockNo) {
-		Vector sd = new Vector();
-
-		try {
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/stocksdb", "root", "lin32ledi");
-			PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT_TAIWAN_DATA_POLARIS_BY_STOCK_NO);
-			pstmt.setString(1, stockNo);
-			ResultSet rs = pstmt.executeQuery();
-
-			int i = 1;
-			while (rs.next()) {
-				System.out.println((i++) + "\t" + rs.getString(1) + "\t" + rs.getString(2));
-			}
-			pstmt.close();
-			if (!conn.isClosed()) {
-				conn.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return sd;
+	public static StocksData[] getStocksDataByStockNo(String stockNo) {
+		return getStocksDataByStockNoAndDateBetween(0, 99999999, stockNo);
 	}
 
 	/**
-	 * 以日期區間+股票代號取得指定的股票資料(資料來源：TAIWAN_DATA_POLARIS)
+	 * 以「日期區間+股票代號」取得指定的股票資料(資料來源：TAIWAN_DATA_POLARIS & TAIWAN_DATA_POLARIS_STOCKS)
 	 * 
 	 * @param startDate
-	 *            開始日期
+	 *            開始日期 (startDate = 0, 表示從第1筆開始抓)
 	 * @param endDate
-	 *            結束日期
+	 *            結束日期 (endDate = 99999999, 表示抓到最新的那一筆)
 	 * @param stockNo
 	 *            股票代號
 	 * @return 查詢的股票資料
@@ -214,14 +196,13 @@ public class StocksData {
 		try {
 			Vector<StocksData> vec = new Vector<StocksData>();
 
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/stocksdb", "root", "lin32ledi");
-			PreparedStatement pstmt = conn.prepareStatement(SQL_SELECT_TAIWAN_DATA_POLARIS_BY_STOCK_NO_AND_TWO_DATES);
+			Connection con = DatabaseImp.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(SQL_SELECT_TAIWAN_DATA_POLARIS_BY_STOCK_NO_AND_TWO_DATES);
 			pstmt.setLong(1, startDate);
 			pstmt.setLong(2, endDate);
 			pstmt.setString(3, stockNo);
 			ResultSet rs = pstmt.executeQuery();
 
-			int i = 1;
 			while (rs.next()) {
 				StocksData sd = new StocksData();
 				sd.setDate(rs.getLong("DATE"));
@@ -241,19 +222,15 @@ public class StocksData {
 				sd.setOpenInterestStock(rs.getDouble("OPEN_INTEREST_STOCK"));
 
 				vec.add(sd);
-				// System.out.println((i++) + "\t" + rs.getString(1) + "\t" + rs.getString(2));
-				// System.out.println((i++) + "\t" + sd.printData());
 			}
 			pstmt.close();
-			if (!conn.isClosed()) {
-				conn.close();
+			if (!con.isClosed()) {
+				con.close();
 			}
 			stocksData = vec.toArray(new StocksData[vec.size()]);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// 			e.printStackTrace();
 		}
-
 		return stocksData;
 	}
 
