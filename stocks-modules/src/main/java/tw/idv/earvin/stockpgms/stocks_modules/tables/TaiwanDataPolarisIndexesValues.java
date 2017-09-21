@@ -13,7 +13,7 @@ public class TaiwanDataPolarisIndexesValues {
 	private long indexCode;
 	private long date;
 	private double value;
-	private static Connection con = null; 
+	private static Connection con = null;
 
 	private static String SQL_QUERY_BY_PK = "SELECT * FROM TAIWAN_DATA_POLARIS_INDEXES_VALUES WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
 	private static String SQL_UPDATE_BY_PK = "UPDATE TAIWAN_DATA_POLARIS_INDEXES_VALUES SET VALUE = ? WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
@@ -65,13 +65,16 @@ public class TaiwanDataPolarisIndexesValues {
 		return print(this);
 	}
 
+	public boolean hasData() {
+		return hasData(this);
+	}
+
 	// -- Static Functions ---------------------------------------------------//
 
 	public static boolean hasData(TaiwanDataPolarisIndexesValues vo) {
-//		Connection con = DatabaseImp.getConnection();
 		if (con == null) {
 			con = DatabaseImp.getConnection();
-		}	
+		}
 		return hasData(con, vo);
 	}
 
@@ -93,7 +96,6 @@ public class TaiwanDataPolarisIndexesValues {
 	}
 
 	public static int update(TaiwanDataPolarisIndexesValues vo) {
-//		Connection con = DatabaseImp.getConnection();
 		if (con == null) {
 			con = DatabaseImp.getConnection();
 		}
@@ -118,7 +120,6 @@ public class TaiwanDataPolarisIndexesValues {
 	}
 
 	public static int insert(TaiwanDataPolarisIndexesValues vo) {
-//		Connection con = DatabaseImp.getConnection();
 		if (con == null) {
 			con = DatabaseImp.getConnection();
 		}
@@ -155,11 +156,13 @@ public class TaiwanDataPolarisIndexesValues {
 		theVO.setIndexCode(1005);
 		theVO.setStockNo("2349");
 		theVO.setValue(299.99);
-//		System.out.println("The value is " + theVO.insert());
+		// System.out.println("The value is " + theVO.insert());
 		System.out.println("The value is " + theVO.update());
 		// System.out.println("The value is " +
 		// TaiwanDataPolarisIndexesValues.insert(theVO));
-//		System.out.println("The value is " + TaiwanDataPolarisIndexesValues.update(theVO));
-//		System.out.println("The value is " + TaiwanDataPolarisIndexesValues.print(theVO));
+		// System.out.println("The value is " +
+		// TaiwanDataPolarisIndexesValues.update(theVO));
+		// System.out.println("The value is " +
+		// TaiwanDataPolarisIndexesValues.print(theVO));
 	}
 }
