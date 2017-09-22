@@ -4,65 +4,48 @@ import tw.idv.earvin.stockpgms.stocks_modules.tables.StocksIndexesName;
 import tw.idv.earvin.stockpgms.stocks_modules.tables.TaiwanDataPolarisIndexesValues;
 
 public class IndexStochRSI {
-	
+
 	/**
-	 * -- not finish, needs calculate RSI first.
+	 * -- Calculate index StockRSI. Before do it, needs calculate RSI first. 
+	 * 
 	 * @param sd
 	 * @param indexDay
 	 * @return
 	 */
 	public static TaiwanDataPolarisIndexesValues[] calculateStochRSI(StocksData[] sd, int indexDay) {
-		TaiwanDataPolarisIndexesValues[] indexData = null;
+		TaiwanDataPolarisIndexesValues[] indexData = IndexRSI.calculateRSI(sd, indexDay);
 		long indexCode = StocksIndexesName.getIndexCode("StochRSI_" + indexDay);
-		System.out.println("[IndexRWMS.calculateStochRSI(...)] -- IndexCode(StochRSI, " + indexDay + ") = " + indexCode);
+		System.out.println(
+				"[IndexStochRSI.calculateStochRSI(...)] -- IndexCode(StochRSI, " + indexDay + ") = " + indexCode);
 		int i = 0, j = 0;
-		double minValue = 0, maxValue = 0;
-		while (j <= sd.length) {
+		double minValue = 0, maxValue = 0, stochRSIValue = 0;
+		while (j < indexData.length) {
+			minValue = 100;
+			maxValue = 0;
 			if (j <= indexDay) {
-				minValue = 0;
-				maxValue = 100;
 				for (i = 0; i < j; i++) {
-//					if (minValue < sd[i].)
+					if (minValue > indexData[i].getValue())
+						minValue = indexData[i].getValue();
+					if (maxValue < indexData[i].getValue())
+						maxValue = indexData[i].getValue();
+				}
+			} else {
+				for (i = j; i > (j - indexDay); i--) {
+					if (minValue > indexData[i].getValue())
+						minValue = indexData[i].getValue();
+					if (maxValue < indexData[i].getValue())
+						maxValue = indexData[i].getValue();
 				}
 			}
+			if ((maxValue - minValue) != 0) {
+				stochRSIValue = (indexData[j].getValue() - minValue) * 100 / (maxValue - minValue);
+			} else {
+				stochRSIValue = 0.5;
+			}
+			indexData[j].setIndexCode(indexCode);
+			indexData[j].setValue(stochRSIValue);
+			j += 1;
 		}
-		/*
-    While j <= intStockNo
-        If j <= StochRSI_No Then
-            sngMax = 0
-            sngMin = 100
-            For i = 1 To j
-                If sngMax < udtIndex(i).sngRSI_S Then
-                    sngMax = udtIndex(i).sngRSI_S
-                End If
-                If sngMin > udtIndex(i).sngRSI_S Then
-                    sngMin = udtIndex(i).sngRSI_S
-                End If
-            Next i
-        Else
-            sngMax = 0
-            sngMin = 100
-            For i = j To j - StochRSI_No + 1 Step -1
-                If sngMax < udtIndex(i).sngRSI_S Then
-                    sngMax = udtIndex(i).sngRSI_S
-                End If
-                If sngMin > udtIndex(i).sngRSI_S Then
-                    sngMin = udtIndex(i).sngRSI_S
-                End If
-            Next i
-        End If
-        If (sngMax - sngMin <> 0) Then
-            udtIndex(j).sngStochRSI = (udtIndex(j).sngRSI_S - sngMin) * 100 / (sngMax - sngMin)
-        Else
-            udtIndex(j).sngStochRSI = 0.5
-        End If
-        j = j + 1
-    Wend
-		 */
-
-		
-		
-		
 		return indexData;
 	}
 
@@ -72,8 +55,8 @@ public class IndexStochRSI {
 		if (indexData != null) {
 			for (int i = 0; i < indexData.length; i++) {
 				System.out.println(i + ", value= " + indexData[i].print());
-				// indexData[i].insert();
-			}		
+			}
 		}
+		System.out.println("測試完成");
 	}
 }
