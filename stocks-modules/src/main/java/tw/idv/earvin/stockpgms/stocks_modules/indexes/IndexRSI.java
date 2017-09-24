@@ -24,10 +24,10 @@ public class IndexRSI {
 						if (diffValue > 0)
 							upValue += diffValue;
 						else
-							downValue += (0 - diffValue);
+							downValue += Math.abs(diffValue);
 					}
-					upValue /= (j+1);
-					downValue /= (j+1);
+					upValue /= (j + 1);
+					downValue /= (j + 1);
 				} else {
 					for (int i = j; i > (j - indexDay); i--) {
 						diffValue = sd[i].getEndPrice() - sd[i - 1].getEndPrice();
@@ -35,15 +35,16 @@ public class IndexRSI {
 							upValue += diffValue;
 						else
 							downValue += Math.abs(diffValue);
-						upValue /= indexDay;
-						downValue /= indexDay;
 					}
+					upValue /= indexDay;
+					downValue /= indexDay;
 				}
 				if ((j != 0) && ((upValue + downValue) != 0)) {
 					rsiValue = upValue / (upValue + downValue) * 100;
 				} else {
 					rsiValue = 50;
 				}
+				System.out.println(sd[j].printData() + " -- the rsiValue= " + rsiValue);
 				indexData[j] = new TaiwanDataPolarisIndexesValues();
 				indexData[j].setDate(sd[j].getDate());
 				indexData[j].setIndexCode(indexCode);
@@ -57,8 +58,8 @@ public class IndexRSI {
 	}
 
 	public static void main(String[] args) {
-		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950201, 951231, "2002");
-		TaiwanDataPolarisIndexesValues[] indexData = calculateRSI(sd, 5);
+		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950209, 951225, "2002");
+		TaiwanDataPolarisIndexesValues[] indexData = calculateRSI(sd, 6);
 		if (indexData != null) {
 			for (int i = 0; i < indexData.length; i++) {
 				System.out.println(i + ", value= " + indexData[i].print());

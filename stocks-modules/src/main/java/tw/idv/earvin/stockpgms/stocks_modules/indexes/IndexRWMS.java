@@ -4,9 +4,8 @@ import tw.idv.earvin.stockpgms.stocks_modules.tables.StocksIndexesName;
 import tw.idv.earvin.stockpgms.stocks_modules.tables.TaiwanDataPolarisIndexesValues;
 
 public class IndexRWMS {
-
 	/**
-	 * 計算RWMS技術指標
+	 * 計算RWMS技術指標(其實就是WMS技術指標，我也搞不懂這樣子兩者不是沒差異，那弄這兩個指標要做啥？)
 	 * 
 	 * @param sd
 	 *            股票資料
@@ -52,9 +51,7 @@ public class IndexRWMS {
 				} else {
 					wmsValue = 50;
 				}
-				// System.out.println(j + ", maxValue= " + maxValue + ", minValue= " + minValue
-				// + " -- "
-				// + sd[j].printData() + " -- the rwms value = " + (100 - wmsValue));
+				System.out.println(sd[i].printData() + " -- RWMS= " + (100 - wmsValue));
 				indexData[j] = new TaiwanDataPolarisIndexesValues();
 				indexData[j].setDate(sd[j].getDate());
 				indexData[j].setIndexCode(indexCode);
@@ -67,43 +64,18 @@ public class IndexRWMS {
 		return indexData;
 	}
 
-	/**
-	 * Calculate the average value of RWMS and insert to DB(table :
-	 * TAIWAN_DATA_POLARIS_INDEXES_VALUES).
-	 * 
-	 * @param stockNo
-	 *            股票代號
-	 */
-	public static void CalculateRWMSAndInsertToDB(String stockNo, int indexDay) {
-		int counts = 0;
-		int updateCount = 0;
-		int insertCount = 0;
-		StocksData[] sd = null;
-		System.out.println("RWMS指標作業開始 -- 處理股票代號= " + stockNo + ", 指標天數= " + indexDay);
-		sd = StocksData.getStocksDataByStockNo(stockNo);
-		System.out.println("本次計算資料總筆數為 " + sd.length);
-		if (sd.length > 0) {
-			TaiwanDataPolarisIndexesValues[] indexData = calculateRWMS(sd, indexDay);
+	public static void main(String[] args) {
+		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950209, 951231, "2002");
+		TaiwanDataPolarisIndexesValues[] indexData = calculateRWMS(sd, 6);
+		if (indexData != null) {
 			for (int i = 0; i < indexData.length; i++) {
-				if (indexData[i].hasData()) {
+				System.out.println(i + ", value= " + indexData[i].print());
+				if (indexData[i].hasData())
 					indexData[i].update();
-					updateCount += 1;
-				} else {
+				else
 					indexData[i].insert();
-					insertCount += 1;
-				}
 			}
 		}
-		System.out.println("RWMS指標作業完成 -- 處理股票代號= " + stockNo + ", 指標天數= " + indexDay + ", 總筆數= " + counts + ", 新增筆數= "
-				+ insertCount + ", 更新筆數= " + updateCount);
-	}
-
-	public static void main(String[] args) {
-		CalculateRWMSAndInsertToDB("2002", 10);
-		// CalculateRWMSAndInsertToDB("2349", 5);
-		// CalculateRWMSAndInsertToDB("2349", 30);
-		// CalculateRWMSAndInsertToDB("2349", 90);
-		// CalculateRWMSAndInsertToDB("2349", 180);
-		// CalculateRWMSAndInsertToDB("2349", 360);
+		System.out.println("測試完成!!");
 	}
 }
