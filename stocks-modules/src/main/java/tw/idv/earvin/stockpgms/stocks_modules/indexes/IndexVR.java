@@ -25,7 +25,7 @@ public class IndexVR {
 			int j = 0;
 			double vrValue = 0, volUpValue = 0, volDownValue = 0, volEquValue = 0;
 			while (j < sd.length) {
-				if (j < indexDay) {
+				if (j < (indexDay-1)) {
 					vrValue = 0;
 				} else {
 					volUpValue = 0;
@@ -64,7 +64,7 @@ public class IndexVR {
 	}
 
 	public static void main(String[] args) {
-		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950209, 951225, "2002");
+		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950209, 950331, "2002");
 		TaiwanDataPolarisIndexesValues[] indexData = calculateVR(sd, 6);
 		if (indexData != null) {
 			for (int i = 0; i < indexData.length; i++) {

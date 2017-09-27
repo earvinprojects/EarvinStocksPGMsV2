@@ -8,6 +8,7 @@ import tw.idv.earvin.stockpgms.stocks_modules.tables.TaiwanDataPolarisIndexesVal
 
 public class IndexRSITest {
 	private static TaiwanDataPolarisIndexesValues[] compareData = null;
+
 	@Before
 	public void instantiate() throws Exception {
 		compareData = new TaiwanDataPolarisIndexesValues[11];

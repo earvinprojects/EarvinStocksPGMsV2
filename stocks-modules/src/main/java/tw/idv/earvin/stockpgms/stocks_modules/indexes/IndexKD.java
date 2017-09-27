@@ -21,12 +21,12 @@ public class IndexKD {
 			
 			int j = 0;
 			double maxValue = 0, minValue = 0, rsvValue = 0;
-			double prevKValue = 0, prevDValue = 0, KValue = 0, DValue = 0;
+			double prevKValue = 50, prevDValue = 50, KValue = 0, DValue = 0;
 			while (j < sd.length) {
 				maxValue = -1;
 				minValue = 999999;
 				if (j < indexDay) {
-					for (int i = 0; i < j; i++) {
+					for (int i = 0; i <= j; i++) {
 						if (maxValue < sd[i].getHighPrice())
 							maxValue = sd[i].getHighPrice();
 						if (minValue > sd[i].getLowPrice())
@@ -71,8 +71,8 @@ public class IndexKD {
 	}
 
 	public static void main(String[] args) {
-		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950209, 951225, "2002");
-		Vector<TaiwanDataPolarisIndexesValues[]> vec = calculateKD(sd, 6);
+		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950209, 950331, "2002");
+		Vector<TaiwanDataPolarisIndexesValues[]> vec = calculateKD(sd, 9);
 		for (int i = 0; i < vec.size(); i++) {
 			TaiwanDataPolarisIndexesValues[] indexData = vec.get(i);
 			if (indexData != null) {
