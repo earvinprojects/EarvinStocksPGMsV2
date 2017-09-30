@@ -1,11 +1,5 @@
 package tw.idv.earvin.stockpgms.stocks_modules.indexes;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import tw.idv.earvin.stockpgms.stocks_modules.tables.StocksIndexesName;
 import tw.idv.earvin.stockpgms.stocks_modules.tables.TaiwanDataPolarisIndexesValues;
 
