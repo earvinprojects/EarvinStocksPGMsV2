@@ -27,13 +27,15 @@ public class IndexData {
 	}
 	
 	public void printData() {
-		System.out.println("STOCK = " + this.getStockNo());
+		System.out.println("=== [Display IndexData Object START] === ");
+		System.out.println("STOCK_NO = " + this.getStockNo());
 		for (int i = 0; i < indexValues.size(); i++) {
 			TaiwanDataPolarisIndexesValues[] id = indexValues.get(i);
 			for (int j = 0; j < id.length; j++) {
 				System.out.println(id[j].getDate() + ", " + id[j].getIndexCode() + ", " + id[j].getValue());
 			}
 		}
+		System.out.println("=== [Display IndexData Object END] === ");
 	}
 	
 	public static void main(String[] args) {

@@ -50,6 +50,5 @@ public class IndexPSY {
 			}
 		}
 		System.out.println("測試完成!!");
-
 	}
 }
