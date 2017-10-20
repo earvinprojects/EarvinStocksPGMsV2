@@ -23,31 +23,40 @@ public class IndexEMA {
 
 		if (sd.length > 0) {
 			indexData = new TaiwanDataPolarisIndexesValues[sd.length];
-			double curEMAValue = 0;
-			double prevEMAValue = 0;
 			for (int i = 0; i < sd.length; i++) {
-				if (i == 0) {
-					curEMAValue = sd[i].getEndPrice();
-					prevEMAValue = curEMAValue;
-				} else {
-//					curEMAValue = (sd[i].getEndPrice() * 2 / (indexDay + 1)) + prevEMAValue * (1 - (2 / (indexDay + 1)));
-					curEMAValue = ((sd[i].getEndPrice() / (indexDay + 1)) * 2) + ((prevEMAValue / (indexDay + 1)) * (indexDay - 1));
-					prevEMAValue = curEMAValue;
-				}
-
-				System.out.println(sd[i].printData() + " -- the EMA Value= " + curEMAValue);
+				int loops = 1;
+				double emaValue = getTodayEMA(sd, i, indexDay, ((i < indexDay) ? -1 : loops));
+				System.out.println(sd[i].printData() + " -- the EMA Value= " + emaValue);
 				indexData[i] = new TaiwanDataPolarisIndexesValues();
 				indexData[i].setStockNo(sd[i].getStockNo());
 				indexData[i].setDate(sd[i].getDate());
 				indexData[i].setIndexCode(indexCode);
-				indexData[i].setValue(curEMAValue);
+				indexData[i].setValue(emaValue);
 			}
 		}
 		return indexData;
 	}
 
+	private static double getTodayEMA(StocksData[] sd, int row, int indexDay, int loops) {
+		if ((row < indexDay) && (loops < 0)) {
+			if ((row % indexDay) == 0) {
+				return sd[row].getEndPrice();
+			} else {
+				return ((2 * sd[row].getEndPrice()) / (indexDay + 1)
+						+ (getTodayEMA(sd, row - 1, indexDay, loops) * (indexDay - 1) / (indexDay + 1)));
+			}
+		} else {
+			if ((loops % indexDay) == 0) {
+				return sd[row].getEndPrice();
+			} else {
+				return ((2 * sd[row].getEndPrice()) / (indexDay + 1)
+						+ (getTodayEMA(sd, row - 1, indexDay, ++loops) * (indexDay - 1) / (indexDay + 1)));
+			}
+		}
+	}
+
 	public static void main(String[] args) {
-		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950209, 951231, "2002");
+		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950209, 950331, "2002");
 		TaiwanDataPolarisIndexesValues[] indexData = calculateEMA(sd, 5);
 		if (indexData != null) {
 			for (int i = 0; i < indexData.length; i++) {
