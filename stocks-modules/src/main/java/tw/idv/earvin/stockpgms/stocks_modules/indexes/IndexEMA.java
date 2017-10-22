@@ -61,10 +61,10 @@ public class IndexEMA {
 		if (indexData != null) {
 			for (int i = 0; i < indexData.length; i++) {
 				System.out.println(i + ", value= " + indexData[i].print());
-				// if (indexData[i].hasData())
-				// indexData[i].update();
-				// else
-				// indexData[i].insert();
+				if (indexData[i].hasData())
+					indexData[i].update();
+				else
+					indexData[i].insert();
 			}
 		}
 		System.out.println("EMA 測試完成!!");
