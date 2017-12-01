@@ -46,4 +46,9 @@ public class HelloWorld extends javax.swing.JFrame {
 			}
 		});
 	}
+
+	// 於視窗上繪製字串
+	public void paint(Graphics g) {
+		g.drawString("Hello World Frame", 50, 50);
+	}
 }
