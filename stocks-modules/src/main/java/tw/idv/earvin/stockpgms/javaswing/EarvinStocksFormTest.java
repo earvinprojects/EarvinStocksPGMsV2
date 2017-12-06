@@ -44,9 +44,9 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 	    toolbar.add(testButton2);
 	    JButton testButton3 = new JButton("Test3");
 	    toolbar.add(testButton3);
-	    JButton testButton4 = new JButton("Test4");
-	    testButton4.addActionListener(l);
-	    toolbar.add(testButton4);
+//	    JButton testButton4 = new JButton("Test4");
+//	    testButton4.addActionListener(l);
+//	    toolbar.add(testButton4);
 	    
 	    this.add(toolbar);  
 //	    this.setLayout(new FlowLayout(FlowLayout.RIGHT));  
