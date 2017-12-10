@@ -64,6 +64,7 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 	
 	// 於視窗上繪製字串
 	public void paint(Graphics g) {
-		g.drawString("For Test!", 50, 50);
+		// 其實有顯示，但是很奇怪…win10有問題~~
+		g.drawString("For Test!", 200, 250);
 	}
 }
