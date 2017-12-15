@@ -2,20 +2,33 @@ package tw.idv.earvin.stockpgms.javaswing;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Line2D;
 
 import javax.swing.*;
 
 public class EarvinStocksFormTest extends javax.swing.JFrame {
 
 	public static void main(String[] args) {
-		new EarvinStocksFormTest();
+		try {
+			System.out.println(UIManager.getSystemLookAndFeelClassName());
+
+			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+//			UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+//			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			                          
+		} catch (Exception e) {
+			System.out.println("error");
+		}
+		 JFrame f = new EarvinStocksFormTest();
+		 f.setSize(1200, 800);
+		 f.setVisible(true);
 	}
 
 	public EarvinStocksFormTest() {
 		super("Earvin's Stocks Form");
 
 		// 設定視窗的大小
-		this.setSize(1200, 800);
+//		this.setSize(1200, 800);
 
 	    // 取得螢幕大小
 	    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -34,6 +47,7 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 	    // 將視窗定位於螢幕中央
 	    this.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
 
+	    // JDK 5.0以後，使用swing的寫法~~
 	    // Add Toolbar
 	    JPanel toolbar = new JPanel();
 //	    toolbar.setBounds(0,0,200,200);    
@@ -44,15 +58,11 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 	    toolbar.add(testButton2);
 	    JButton testButton3 = new JButton("Test3");
 	    toolbar.add(testButton3);
-//	    JButton testButton4 = new JButton("Test4");
-//	    testButton4.addActionListener(l);
-//	    toolbar.add(testButton4);
+	    JButton testButton4 = new JButton("Test4");
+	    toolbar.add(testButton4);
 	    
 	    this.add(toolbar);  
 //	    this.setLayout(new FlowLayout(FlowLayout.RIGHT));  
-
-	    // 顯示視窗
-		this.setVisible(true);
 
 		// 視窗事件
 		this.addWindowListener(new WindowAdapter() {
@@ -62,9 +72,11 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 		});
 	}
 	
-	// 於視窗上繪製字串
+/*	// 於視窗上繪製字串
 	public void paint(Graphics g) {
-		// 其實有顯示，但是很奇怪…win10有問題~~
 		g.drawString("For Test!", 200, 250);
+		 g.drawRect(100, 200, 100, 100);
+		
 	}
+*/
 }
