@@ -10,11 +10,14 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 
 	public static void main(String[] args) {
 		try {
-			System.out.println(UIManager.getSystemLookAndFeelClassName());
-
-			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+//			System.out.println(UIManager.getSystemLookAndFeelClassName());
+//			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 			// UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
 			// UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			System.out.println("當前系統可用的所有LAF");
+			for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				System.out.println(info.getName() + " --> " + info);
+			}
 
 		} catch (Exception e) {
 			System.out.println("error");
