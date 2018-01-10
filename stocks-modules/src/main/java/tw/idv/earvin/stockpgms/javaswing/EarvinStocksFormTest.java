@@ -8,9 +8,9 @@ import javax.swing.*;
 
 public class EarvinStocksFormTest extends javax.swing.JFrame {
 	
-	class DisplayStocksForm extends Canvas {
-		public void paint(Graphics g) {
-			g.drawString("Hello", 140, 140);
+	class DisplayStocksForm extends JComponent {
+		public void paintComponent(Graphics g) {
+			g.drawString("Hello", 240, 140);
 			setBackground(Color.WHITE);
 			g.fillRect(130, 130, 100, 80);
 			g.drawOval(130, 130, 50, 60);
@@ -18,7 +18,26 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 			g.fillOval(130, 130, 50, 60);
 			g.drawArc(310, 200, 40, 50, 90, 60);
 			g.fillArc(310, 130, 40, 50, 180, 40);
-
+			
+			//-- 20180106 ADD STR ---------------------------------
+	        // 設定K-Bar
+	/*		If Abs(.Height) > 500 Then ' avoiding the happening of minimun window size
+	        	.ScaleHeight = -.Height ' set the x and y axial
+	        	.ScaleWidth = .Width
+	        	.ScaleTop = .Height
+	        	' gsngStartindex : 起始日期
+	        	' gsngEndindex   : 結束日期
+	        	' gsngBarwidth   : K-Bar的寬度
+	        	If gsngStartIndex > 1 Then
+	            	gsngStartIndex = Int(gsngEndIndex - frmEarvinStocks.Width / gsngBarWidth)
+	            	Else	
+	            	gsngEndIndex = gsngStartIndex + Int(frmEarvinStocks.Width / gsngBarWidth)
+	            	End If
+	            	Call DrawStockForm(gsngEndIndex, GetStockName(cboStocks.Text))
+	            End If
+	        End If
+	*/        
+	    	//-- 20180106 ADD END ---------------------------------
 		}
 	}
 
@@ -42,30 +61,30 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 		f.setVisible(true);
 	}
 
+	// 建構子
 	public EarvinStocksFormTest() {
 		super("Earvin's Stocks Form");
-
+		
+		this.getContentPane().setLayout(new BorderLayout());
 		// 設定視窗的大小
-		// this.setSize(1200, 800);
-
+		this.setSize(1200, 800);
 		// 取得螢幕大小
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
+		System.out.println("screen Height= " + screenSize.getHeight() + ", screen width= " + screenSize.getWidth());
 		// 取得視窗大小
+		
 		Dimension frameSize = this.getSize();
-
+		System.out.println("Frame Height= " + frameSize.getHeight() + ", Frame width= " + frameSize.getWidth());
 		// 比較螢幕與視窗的高度
 		if (frameSize.height > screenSize.height)
 			frameSize.height = screenSize.height;
-
 		// 比較螢幕與視窗的寬度
 		if (frameSize.width > screenSize.width)
 			frameSize.width = screenSize.width;
-
 		// 將視窗定位於螢幕中央
-//		this.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
-		this.setLocation(200, 100);
-
+		this.setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
+		
+		
 		// JDK 5.0以後，使用swing的寫法~~
 		// Add Toolbar
 		JPanel toolbar = new JPanel();
@@ -80,36 +99,16 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 		toolbar.add(testButton3);
 		JButton testButton4 = new JButton("Test4");
 		toolbar.add(testButton4);
-		add(toolbar, BorderLayout.NORTH);
+		this.add(toolbar, BorderLayout.NORTH);
 		// 顯示股票線圖
-		add(new DisplayStocksForm(), BorderLayout.CENTER);
+		this.add(new DisplayStocksForm(), BorderLayout.CENTER);
 
-		// 視窗事件
+		// 視窗事件 (20180107 事件的寫法有3種，但是我有點心了~~")
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
 			}
 		});
-		
-		//-- 20180106 ADD STR ---------------------------------
-        // 設定K-Bar
-/*		If Abs(.Height) > 500 Then ' avoiding the happening of minimun window size
-        	.ScaleHeight = -.Height ' set the x and y axial
-        	.ScaleWidth = .Width
-        	.ScaleTop = .Height
-        	' gsbgStartindex : 起始日期
-        	' gsngEndindex   : 結束日期
-        	' gsngBarwidth   : K-Bar的寬度
-        	If gsngStartIndex > 1 Then
-            	gsngStartIndex = Int(gsngEndIndex - frmEarvinStocks.Width / gsngBarWidth)
-            	Else	
-            	gsngEndIndex = gsngStartIndex + Int(frmEarvinStocks.Width / gsngBarWidth)
-            	End If
-            	Call DrawStockForm(gsngEndIndex, GetStockName(cboStocks.Text))
-            End If
-        End If
-*/        
-    	//-- 20180106 ADD END ---------------------------------
 	}
 
 
@@ -119,9 +118,13 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 	// stockName 股票中文名稱
 	public void DrawStockForm(int endIndex, String stockName) {
 /*	    frameCount = cboFrameNum.Text ' 記錄目前的frame數目
+ 		// 設定各個frame高度
 	    Call SetEachFrameHigh(frameCount)
+	   	// 繪製frame外框
 	    Call DrawOutlineOfFrames(frameCount)
+	    // 記錄要顯示的資料起始位置(gsngStartindex
 	    Call SetDisplayStartIndex
+	    // 繪製要顯示的線圖是 日線 OR 週線 OR 月線
 	    Call DrawStockFormByStockType(cboStocksType.Text, displayEndIndex)
 */
 		
@@ -175,8 +178,10 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 	// displayEndIndex
 	public void DrawStockFormByStockType(String stockType, int displayEndIndex) {
 /*	    If stockType = "日線" Then
-	        Call DrawFrameData(gudtStockDay, gudtIndexDay) ' Draw each index
-	        Call DrawStockIndexes(gudtStockDay, gudtIndexDay, gintDayIndex, displayEndIndex) ' Display each index values on right side
+ 			// 根據每個frame所選擇要顯示的指標來繪製圖形
+	        Call DrawFrameData(gudtStockDay, gudtIndexDay)
+	        // Display each index values on right side
+	        Call DrawStockIndexes(gudtStockDay, gudtIndexDay, gintDayIndex, displayEndIndex) 
 	    ElseIf stockType = "週線" Then
 	        Call DrawFrameData(gudtStockWeek, gudtIndexWeek)
 	        Call DrawStockIndexes(gudtStockWeek, gudtIndexWeek, gintWeekIndex, displayEndIndex)
@@ -242,4 +247,12 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 	}
 	
 	
+	// 在顯示畫面的右方顯示一些技術指標的值
+	// 輸入參數: gudtStock     股價資料
+	//          gudtIndex     技術指標資料
+	//          intTotalIndex 資料總筆數
+	//          sngIndex      目前畫面所在位置(第??筆)
+	public void DrawStockIndexes() {
+		
+	}
 }
