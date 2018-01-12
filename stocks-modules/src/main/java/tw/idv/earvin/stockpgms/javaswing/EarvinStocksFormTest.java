@@ -10,15 +10,27 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 	
 	class DisplayStocksForm extends JComponent {
 		public void paintComponent(Graphics g) {
+//			setBackground(Color.BLUE);	// 設定無效，不知為何??
+			setForeground(Color.BLUE);
 			g.drawString("Hello", 240, 140);
-			setBackground(Color.WHITE);
+
 			g.fillRect(130, 130, 100, 80);
 			g.drawOval(130, 130, 50, 60);
-			setForeground(Color.BLUE);
 			g.fillOval(130, 130, 50, 60);
 			g.drawArc(310, 200, 40, 50, 90, 60);
 			g.fillArc(310, 130, 40, 50, 180, 40);
 			
+			System.out.println("[DisplayStocksForm.paintComponent()], width= " + this.getWidth() + ", height= " + this.getHeight());
+//			setBackground(Color.GREEN);
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+			Dimension frameSize = this.getSize();
+//			System.out.println("Frame Height= " + frameSize.getHeight() + ", Frame width= " + frameSize.getWidth());
+
+			int kBarWidth = 10;
+			int startDisplayRecord = 0;
+			int endDisplayRecord = 1000;
+			startDisplayRecord = endDisplayRecord -  (int) screenSize.getWidth() / kBarWidth;
+			System.out.println("startDisplayRecord= " + startDisplayRecord +", endDisplayRecord= " + endDisplayRecord);
 			//-- 20180106 ADD STR ---------------------------------
 	        // 設定K-Bar
 	/*		If Abs(.Height) > 500 Then ' avoiding the happening of minimun window size
@@ -58,6 +70,7 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 		EarvinStocksFormTest f = new EarvinStocksFormTest();
 		// f.setLayout(new FlowLayout());
 		f.setSize(1000, 800);
+		System.out.println("frame=" + f.getBackground());
 		f.setVisible(true);
 	}
 
@@ -70,11 +83,11 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 		this.setSize(1200, 800);
 		// 取得螢幕大小
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		System.out.println("screen Height= " + screenSize.getHeight() + ", screen width= " + screenSize.getWidth());
+		System.out.println("[EarvinStocksFormTest()] screen Height= " + screenSize.getHeight() + ", screen width= " + screenSize.getWidth());
 		// 取得視窗大小
 		
 		Dimension frameSize = this.getSize();
-		System.out.println("Frame Height= " + frameSize.getHeight() + ", Frame width= " + frameSize.getWidth());
+		System.out.println("[EarvinStocksFormTest()] Frame Height= " + frameSize.getHeight() + ", Frame width= " + frameSize.getWidth());
 		// 比較螢幕與視窗的高度
 		if (frameSize.height > screenSize.height)
 			frameSize.height = screenSize.height;
@@ -88,7 +101,7 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 		// JDK 5.0以後，使用swing的寫法~~
 		// Add Toolbar
 		JPanel toolbar = new JPanel();
-		toolbar.setBackground(Color.GRAY);
+		toolbar.setBackground(Color.YELLOW);
 		// toolbar.setBounds(0,0,200,200);
 		toolbar.setLayout(new FlowLayout(FlowLayout.LEFT));
 		JButton testButton1 = new JButton("Test1");
