@@ -10,7 +10,7 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 	
 	class DisplayStocksForm extends JComponent {
 		public void paintComponent(Graphics g) {
-//			setBackground(Color.BLUE);	// 設定無效，不知為何??
+			super.paintComponent(g);
 			setForeground(Color.BLUE);
 			g.drawString("Hello", 240, 140);
 
@@ -19,6 +19,14 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 			g.fillOval(130, 130, 50, 60);
 			g.drawArc(310, 200, 40, 50, 90, 60);
 			g.fillArc(310, 130, 40, 50, 180, 40);
+			
+			//-- 20180113 STR --
+			System.out.println("location -- x= " + this.getX() + ", y= " + this.getY());
+			System.out.println("size -- h= " + this.getHeight() + ", w= " + this.getWidth());
+			g.drawRect(0+5, 0+5, this.getWidth()-10, this.getHeight()-10);	// left corner
+	
+			
+			//-- 20180113 END --
 			
 			System.out.println("[DisplayStocksForm.paintComponent()], width= " + this.getWidth() + ", height= " + this.getHeight());
 //			setBackground(Color.GREEN);
@@ -115,8 +123,9 @@ public class EarvinStocksFormTest extends javax.swing.JFrame {
 		this.add(toolbar, BorderLayout.NORTH);
 		// 顯示股票線圖
 		this.add(new DisplayStocksForm(), BorderLayout.CENTER);
+		
 
-		// 視窗事件 (20180107 事件的寫法有3種，但是我有點心了~~")
+		// 視窗事件 (20180107 事件的寫法有3種，但是我有點忘了~~")
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
