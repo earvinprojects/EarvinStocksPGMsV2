@@ -24,23 +24,6 @@ public class DisplayStocksForm extends JComponent {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		setForeground(Color.BLUE);
-		g.drawString("Hello", 240, 140);
-
-		g.fillRect(130, 130, 100, 80);
-		g.drawOval(130, 130, 50, 60);
-		g.fillOval(130, 130, 50, 60);
-		g.drawArc(310, 200, 40, 50, 90, 60);
-		g.fillArc(310, 130, 40, 50, 180, 40);
-
-		
-		//-- 20180113 STR --
-		System.out.println("location -- x= " + this.getX() + ", y= " + this.getY());
-		System.out.println("size -- h= " + this.getHeight() + ", w= " + this.getWidth());
-		g.drawRect(0+5, 0+5, this.getWidth()-10, this.getHeight()-10);	// left corner
-
-		
-		//-- 20180113 END --
-		
 		System.out.println("[DisplayStocksForm.paintComponent()], width= " + this.getWidth() + ", height= " + this.getHeight());
 //		setBackground(Color.GREEN);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -52,6 +35,29 @@ public class DisplayStocksForm extends JComponent {
 		int endDisplayRecord = 1000;
 		startDisplayRecord = endDisplayRecord -  (int) screenSize.getWidth() / kBarWidth;
 		System.out.println("startDisplayRecord= " + startDisplayRecord +", endDisplayRecord= " + endDisplayRecord);
+
+		//------------------
+		//-- 20180115 STR --
+		//------------------
+		System.out.println("location -- x= " + this.getX() + ", y= " + this.getY());
+		System.out.println("size -- h= " + this.getHeight() + ", w= " + this.getWidth());
+		g.drawRect(0+10, 0+10, this.getWidth()-20, this.getHeight()-20);	// 外框
+		g.drawRect(0+10, 0+40, this.getWidth()-150, this.getHeight()-50);	// 內框
+		g.drawRect(10+this.getWidth()-150, 0+10, 130, this.getHeight()-20);	// 右框
+		g.drawLine(0+10, (int)(40+(this.getHeight()-50)/3), 10+this.getWidth()-150, (int)(40+(this.getHeight()-50)/3));	// k線圖底線
+
+		int frameCount = 4;
+		int startX = (int)(40+(this.getHeight()-50)/3);
+		int addHeight = (this.getHeight()-50)*2/3/frameCount;
+		for (int i = 0; i < (frameCount-1); i++) {
+			startX += addHeight;
+			g.drawLine(0+10, startX, 10+this.getWidth()-150, startX);	// k線圖底線			
+		}
+		//------------------
+		//-- 20180115 END --
+		//------------------
+		
+	
 		//-- 20180106 ADD STR ---------------------------------
         // 設定K-Bar
 /*		If Abs(.Height) > 500 Then ' avoiding the happening of minimun window size
@@ -76,7 +82,7 @@ public class DisplayStocksForm extends JComponent {
 	// 繪出股票圖
 	// endIndex 結束日期
 	// stockName 股票中文名稱
-	public void DrawStockForm(int endIndex, String stockName) {
+	public void DrawStockForm(Graphics g, int endIndex, String stockName) {
 /*	    frameCount = cboFrameNum.Text ' 記錄目前的frame數目
  		// 設定各個frame高度
 	    Call SetEachFrameHigh(frameCount)
@@ -88,7 +94,7 @@ public class DisplayStocksForm extends JComponent {
 	    Call DrawStockFormByStockType(cboStocksType.Text, displayEndIndex)
 */
 		SetEachFrameHigh(7);	// 設定各個frame高度
-		DrawOutlineOfFrames(7);	// 繪製frame外框
+		DrawOutlineOfFrames(g, 7);	// 繪製frame外框
 	}
 	
 	// 設定各個frame高度
@@ -108,7 +114,8 @@ public class DisplayStocksForm extends JComponent {
 	
 	// 繪製frame外框
 	// frameCount frame數量
-	public void DrawOutlineOfFrames(int frameCount) {
+	public void DrawOutlineOfFrames(Graphics g, int frameCount) {
+
 /*	    Dim processFrame As Integer
 	    ' left side
 	    Line (0.98 * gsngLeftLevel, gsngBottomFrame)-(0.98 * gsngLeftLevel, Abs(frmEarvinStocks.ScaleHeight) - gsngTopFrame - gsngTopCommand), RGB(200, 100, 0)
@@ -203,7 +210,6 @@ public class DisplayStocksForm extends JComponent {
 	        End Select
 	    Next
 */	
-		
 	}
 	
 	
