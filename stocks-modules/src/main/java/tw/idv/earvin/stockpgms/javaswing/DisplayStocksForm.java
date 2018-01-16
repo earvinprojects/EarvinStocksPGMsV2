@@ -18,6 +18,19 @@ public class DisplayStocksForm extends JComponent {
     public float gsngLeftLevel = 750;	// the width of left edge     (最左側顯示價格文字的寬度-固定)
     public float gsngRightLevel = 1750;	// the width of right edge    (最右側顯示指標文字的寬度-固定) 應是指最右側顯示技術指標值的寬度
 
+    
+	//------------------
+	//-- 20180116 STR --
+	//------------------
+    private int outerFrameHDistance = 10;
+    private int outerFrameWDistance = 10;
+    private int rightFrameWDistance = 150;
+    private int upperFrameHDistance = 30;
+	//------------------
+	//-- 20180116 STR --
+	//------------------
+    
+    
 	// 定義最多只能開10個frame
 	public FrameData frameDatas[] = new FrameData[10];
 
@@ -37,24 +50,41 @@ public class DisplayStocksForm extends JComponent {
 		System.out.println("startDisplayRecord= " + startDisplayRecord +", endDisplayRecord= " + endDisplayRecord);
 
 		//------------------
-		//-- 20180115 STR --
+		//-- 20180116 STR --
 		//------------------
-		System.out.println("location -- x= " + this.getX() + ", y= " + this.getY());
-		System.out.println("size -- h= " + this.getHeight() + ", w= " + this.getWidth());
-		g.drawRect(0+10, 0+10, this.getWidth()-20, this.getHeight()-20);	// 外框
-		g.drawRect(0+10, 0+40, this.getWidth()-150, this.getHeight()-50);	// 內框
-		g.drawRect(10+this.getWidth()-150, 0+10, 130, this.getHeight()-20);	// 右框
-		g.drawLine(0+10, (int)(40+(this.getHeight()-50)/3), 10+this.getWidth()-150, (int)(40+(this.getHeight()-50)/3));	// k線圖底線
-
+//		System.out.println("location -- x= " + this.getX() + ", y= " + this.getY());
+//		System.out.println("size -- h= " + this.getHeight() + ", w= " + this.getWidth());
+		// 外框
+		g.drawRect(outerFrameHDistance, outerFrameWDistance, this.getWidth() - 2 * outerFrameHDistance, this.getHeight() - 2 * outerFrameWDistance);
+		// 右側邊框(顯示各Frame的技術指標資訊)
+		g.drawRect(this.getWidth() - outerFrameWDistance - rightFrameWDistance, 
+				(outerFrameHDistance + upperFrameHDistance), 
+				rightFrameWDistance, 
+				(this.getHeight() - 2 * outerFrameHDistance));
+		// 上方股市資訊顯示區
+		g.drawRect(outerFrameHDistance, 
+				outerFrameWDistance, 
+				(this.getWidth() - outerFrameWDistance * 2), 
+				upperFrameHDistance);
+		// 顯示主要股票K線圖(佔可使用之Frame高度 1/3)
+		int mainStockFrameHDistance = (this.getHeight() - upperFrameHDistance - outerFrameHDistance * 2) / 3;
+		//其它技術視窗(分享可使用之Frame高度 2/3)
+		int otherIndexFrameHDistance = (this.getHeight() - upperFrameHDistance - outerFrameHDistance * 2) / 3 * 2;
+		// 主要股票k線圖的底線 
+		g.drawLine(outerFrameHDistance, 
+				(outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance), 
+				(this.getWidth() - rightFrameWDistance - outerFrameWDistance), 
+				(outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance));
+		// 其它指標視窗的底線(最後一個frame的底線不用畫)
 		int frameCount = 4;
-		int startX = (int)(40+(this.getHeight()-50)/3);
-		int addHeight = (this.getHeight()-50)*2/3/frameCount;
-		for (int i = 0; i < (frameCount-1); i++) {
-			startX += addHeight;
-			g.drawLine(0+10, startX, 10+this.getWidth()-150, startX);	// k線圖底線			
+		int startY = outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance;
+		for (int i = 0; i < (frameCount - 1); i++) {
+			startY += (otherIndexFrameHDistance / 4);
+			g.drawLine(outerFrameHDistance, startY, (this.getWidth() - rightFrameWDistance - outerFrameWDistance), startY);						
 		}
+
 		//------------------
-		//-- 20180115 END --
+		//-- 20180116 END --
 		//------------------
 		
 	
