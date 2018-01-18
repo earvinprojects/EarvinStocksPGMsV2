@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.util.Vector;
 
 import javax.swing.JComponent;
 
@@ -26,6 +27,7 @@ public class DisplayStocksForm extends JComponent {
     private int outerFrameWDistance = 10;
     private int rightFrameWDistance = 150;
     private int upperFrameHDistance = 30;
+    private int canUsedFrameWDistance = 0;	// 記錄可顯示股票資料的寬度
 	//------------------
 	//-- 20180116 STR --
 	//------------------
@@ -60,7 +62,7 @@ public class DisplayStocksForm extends JComponent {
 		g.drawRect(this.getWidth() - outerFrameWDistance - rightFrameWDistance, 
 				(outerFrameHDistance + upperFrameHDistance), 
 				rightFrameWDistance, 
-				(this.getHeight() - 2 * outerFrameHDistance));
+				(this.getHeight() - 2 * outerFrameHDistance - upperFrameHDistance));
 		// 上方股市資訊顯示區
 		g.drawRect(outerFrameHDistance, 
 				outerFrameWDistance, 
@@ -71,17 +73,26 @@ public class DisplayStocksForm extends JComponent {
 		//其它技術視窗(分享可使用之Frame高度 2/3)
 		int otherIndexFrameHDistance = (this.getHeight() - upperFrameHDistance - outerFrameHDistance * 2) / 3 * 2;
 		// 主要股票k線圖的底線 
+		System.out.println("currentFrameWDistance= " + currentFrameWDistance);
 		g.drawLine(outerFrameHDistance, 
 				(outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance), 
 				(this.getWidth() - rightFrameWDistance - outerFrameWDistance), 
 				(outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance));
-		// 其它指標視窗的底線(最後一個frame的底線不用畫)
+		
+		// 記錄可顯示股票資料的寬度
+		canUsedFrameWDistance = (this.getWidth() - rightFrameWDistance - outerFrameWDistance * 2);
+		// 記錄可顯示股票資料各個frame的高度
 		int frameCount = 4;
+		Vector<FrameData> fds = new Vector();
+		fds.add(new FrameData(mainStockFrameHDistance, 0));	// 第1個是K線圖
+		
+		// 其它指標視窗的底線(最後一個frame的底線不用畫)
 		int startY = outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance;
 		for (int i = 0; i < (frameCount - 1); i++) {
 			startY += (otherIndexFrameHDistance / 4);
 			g.drawLine(outerFrameHDistance, startY, (this.getWidth() - rightFrameWDistance - outerFrameWDistance), startY);						
 		}
+
 
 		//------------------
 		//-- 20180116 END --

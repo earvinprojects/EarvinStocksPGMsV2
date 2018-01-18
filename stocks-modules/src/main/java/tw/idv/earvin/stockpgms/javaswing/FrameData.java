@@ -1,14 +1,24 @@
 package tw.idv.earvin.stockpgms.javaswing;
 
 public class FrameData {
-	private float height;
+	private int height;
 	private int attribute;
 	
-	public float getHeight() {
+	public FrameData() {
+		height = 0;
+		attribute = 0;
+	}
+	
+	public FrameData(int h, int a) {
+		setHeight(h);
+		setAttribute(a);
+	}
+	
+	public int getHeight() {
 		return height;
 	}
 	
-	public void setHeight(float v) {
+	public void setHeight(int v) {
 		height = v;
 	}
 	
