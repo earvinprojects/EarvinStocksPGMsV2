@@ -3,7 +3,12 @@ package tw.idv.earvin.stockpgms.javaswing;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.Toolkit;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Vector;
 
 import javax.swing.JComponent;
@@ -28,13 +33,12 @@ public class DisplayStocksForm extends JComponent {
     private int rightFrameWDistance = 150;
     private int upperFrameHDistance = 30;
     private int canUsedFrameWDistance = 0;	// 記錄可顯示股票資料的寬度
+	// 定義最多只能開10個frame
+	public FrameData frameDatas[] = new FrameData[10];
 	//------------------
 	//-- 20180116 STR --
 	//------------------
-    
-    
-	// 定義最多只能開10個frame
-	public FrameData frameDatas[] = new FrameData[10];
+     
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -51,54 +55,6 @@ public class DisplayStocksForm extends JComponent {
 		startDisplayRecord = endDisplayRecord -  (int) screenSize.getWidth() / kBarWidth;
 		System.out.println("startDisplayRecord= " + startDisplayRecord +", endDisplayRecord= " + endDisplayRecord);
 
-		//------------------
-		//-- 20180116 STR --
-		//------------------
-//		System.out.println("location -- x= " + this.getX() + ", y= " + this.getY());
-//		System.out.println("size -- h= " + this.getHeight() + ", w= " + this.getWidth());
-		// 外框
-		g.drawRect(outerFrameHDistance, outerFrameWDistance, this.getWidth() - 2 * outerFrameHDistance, this.getHeight() - 2 * outerFrameWDistance);
-		// 右側邊框(顯示各Frame的技術指標資訊)
-		g.drawRect(this.getWidth() - outerFrameWDistance - rightFrameWDistance, 
-				(outerFrameHDistance + upperFrameHDistance), 
-				rightFrameWDistance, 
-				(this.getHeight() - 2 * outerFrameHDistance - upperFrameHDistance));
-		// 上方股市資訊顯示區
-		g.drawRect(outerFrameHDistance, 
-				outerFrameWDistance, 
-				(this.getWidth() - outerFrameWDistance * 2), 
-				upperFrameHDistance);
-		// 顯示主要股票K線圖(佔可使用之Frame高度 1/3)
-		int mainStockFrameHDistance = (this.getHeight() - upperFrameHDistance - outerFrameHDistance * 2) / 3;
-		//其它技術視窗(分享可使用之Frame高度 2/3)
-		int otherIndexFrameHDistance = (this.getHeight() - upperFrameHDistance - outerFrameHDistance * 2) / 3 * 2;
-		// 主要股票k線圖的底線 
-		System.out.println("currentFrameWDistance= " + currentFrameWDistance);
-		g.drawLine(outerFrameHDistance, 
-				(outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance), 
-				(this.getWidth() - rightFrameWDistance - outerFrameWDistance), 
-				(outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance));
-		
-		// 記錄可顯示股票資料的寬度
-		canUsedFrameWDistance = (this.getWidth() - rightFrameWDistance - outerFrameWDistance * 2);
-		// 記錄可顯示股票資料各個frame的高度
-		int frameCount = 4;
-		Vector<FrameData> fds = new Vector();
-		fds.add(new FrameData(mainStockFrameHDistance, 0));	// 第1個是K線圖
-		
-		// 其它指標視窗的底線(最後一個frame的底線不用畫)
-		int startY = outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance;
-		for (int i = 0; i < (frameCount - 1); i++) {
-			startY += (otherIndexFrameHDistance / 4);
-			g.drawLine(outerFrameHDistance, startY, (this.getWidth() - rightFrameWDistance - outerFrameWDistance), startY);						
-		}
-
-
-		//------------------
-		//-- 20180116 END --
-		//------------------
-		
-	
 		//-- 20180106 ADD STR ---------------------------------
         // 設定K-Bar
 /*		If Abs(.Height) > 500 Then ' avoiding the happening of minimun window size
@@ -118,6 +74,7 @@ public class DisplayStocksForm extends JComponent {
         End If
 */        
     	//-- 20180106 ADD END ---------------------------------
+		DrawStockForm(g, 1, "test");
 	}
 	
 	// 繪出股票圖
@@ -125,58 +82,126 @@ public class DisplayStocksForm extends JComponent {
 	// stockName 股票中文名稱
 	public void DrawStockForm(Graphics g, int endIndex, String stockName) {
 /*	    frameCount = cboFrameNum.Text ' 記錄目前的frame數目
- 		// 設定各個frame高度
+ 		// 設定各個frame高度 (ok)
 	    Call SetEachFrameHigh(frameCount)
-	   	// 繪製frame外框
+	   	// 繪製frame外框 (ok)
 	    Call DrawOutlineOfFrames(frameCount)
-	    // 記錄要顯示的資料起始位置(gsngStartindex
+	    // 記錄要顯示的資料起始位置(gsngStartindex)
 	    Call SetDisplayStartIndex
 	    // 繪製要顯示的線圖是 日線 OR 週線 OR 月線
 	    Call DrawStockFormByStockType(cboStocksType.Text, displayEndIndex)
 */
-		SetEachFrameHigh(7);	// 設定各個frame高度
-		DrawOutlineOfFrames(g, 7);	// 繪製frame外框
+//		SetEachFrameHigh(7);	// 設定各個frame高度
+//		DrawOutlineOfFrames(g, 7);	// 繪製frame外框
+		DrawOutlineOfFrames2D(g, 7);	// 繪製frame外框
 	}
 	
-	// 設定各個frame高度
+
+	// 繪製frame外框 (Write OK, 20180119)
 	// frameCount frame數量
-	public void SetEachFrameHigh(int frameCount) {
-		if (frameCount == 1) {
-			frameDatas[0].setHeight(this.getHeight() - gsngTopFrame - gsngTopCommand - gsngBottomFrame);
-		} else {
-			//mudtFrame(1).sngHeight = 3 * ((Abs(frmEarvinStocks.ScaleHeight) - gsngTopFrame - gsngTopCommand - gsngBottomFrame)) / (frameCount + 2)
-			frameDatas[0].setHeight((3 * this.getHeight() - gsngTopFrame - gsngTopCommand - gsngBottomFrame) / (frameCount + 2));
-			for (int i = 1; i < frameCount; i++) {
-				//mudtFrame(processFrame).sngHeight = (Abs(frmEarvinStocks.ScaleHeight) - gsngTopFrame - gsngTopCommand - gsngBottomFrame) / (frameCount + 2)
-				frameDatas[i].setHeight((this.getHeight() - gsngTopFrame - gsngTopCommand - gsngBottomFrame) / (frameCount + 2));
-			}
+	public void DrawOutlineOfFrames(Graphics g, int frameCount) {
+		// 外框
+		g.drawRect(outerFrameHDistance, outerFrameWDistance, this.getWidth() - 2 * outerFrameHDistance, this.getHeight() - 2 * outerFrameWDistance);
+		// 右側邊框(顯示各Frame的技術指標資訊)
+		g.drawRect(this.getWidth() - outerFrameWDistance - rightFrameWDistance, 
+				(outerFrameHDistance + upperFrameHDistance), 
+				rightFrameWDistance, 
+				(this.getHeight() - 2 * outerFrameHDistance - upperFrameHDistance));
+		// 上方股市資訊顯示區
+		g.drawRect(outerFrameHDistance, 
+				outerFrameWDistance, 
+				(this.getWidth() - outerFrameWDistance * 2), 
+				upperFrameHDistance);
+		// 顯示主要股票K線圖(佔可使用之Frame高度 1/3)
+		int mainStockFrameHDistance = (this.getHeight() - upperFrameHDistance - outerFrameHDistance * 2) / 3;
+		//其它技術視窗(分享可使用之Frame高度 2/3)
+		int otherIndexFrameHDistance = (this.getHeight() - upperFrameHDistance - outerFrameHDistance * 2) / 3 * 2;
+		// 主要股票k線圖的底線 
+		g.drawLine(outerFrameHDistance, 
+				(outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance), 
+				(this.getWidth() - rightFrameWDistance - outerFrameWDistance), 
+				(outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance));
+		
+		// 記錄可顯示股票資料的寬度
+		canUsedFrameWDistance = (this.getWidth() - rightFrameWDistance - outerFrameWDistance * 2);
+		System.out.println("canUsedFrameWDistance= " + canUsedFrameWDistance);
+		// 記錄可顯示股票資料各個frame的高度
+		Vector<FrameData> fds = new Vector();
+		fds.add(new FrameData(mainStockFrameHDistance, 0));	// 第1個是K線圖	
+		// 其它指標視窗的底線(最後一個frame的底線不用畫)
+		int startY = outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance;
+		for (int i = 0; i < (frameCount - 1); i++) {
+			startY += (otherIndexFrameHDistance / frameCount);
+			g.drawLine(outerFrameHDistance, startY, (this.getWidth() - rightFrameWDistance - outerFrameWDistance), startY);	
+			fds.add(new FrameData(otherIndexFrameHDistance / frameCount, 0));
+		}
+		// Last one
+		fds.add(new FrameData(otherIndexFrameHDistance - otherIndexFrameHDistance * (frameCount-1) / frameCount, 0));
+		// DEBUG-MSG: 顯示每個frame的高度
+		for (int i = 0; i <= frameCount; i++) {
+			FrameData fd = fds.get(i);
+			System.out.println("Frame[" + i + "]= " + fd.getHeight());
 		}
 	}
 	
-	// 繪製frame外框
+	// 繪製frame外框 (Write OK, 20180119)
 	// frameCount frame數量
-	public void DrawOutlineOfFrames(Graphics g, int frameCount) {
-
-/*	    Dim processFrame As Integer
-	    ' left side
-	    Line (0.98 * gsngLeftLevel, gsngBottomFrame)-(0.98 * gsngLeftLevel, Abs(frmEarvinStocks.ScaleHeight) - gsngTopFrame - gsngTopCommand), RGB(200, 100, 0)
-	    ' right side
-	    Line (Abs(frmEarvinStocks.ScaleWidth) - gsngRightLevel, gsngBottomFrame)-(Abs(frmEarvinStocks.ScaleWidth) - gsngRightLevel, Abs(frmEarvinStocks.ScaleHeight) - gsngTopFrame - gsngTopCommand), RGB(200, 100, 0)
-	    ' bottom side
-	    Line (0.98 * gsngLeftLevel, 0.98 * gsngBottomFrame)-(frmEarvinStocks.ScaleWidth - 0.99 * gsngRightLevel, 0.98 * gsngBottomFrame), RGB(200, 100, 0)
-	    ' top side
-	    Line (0.98 * gsngLeftLevel, Abs(frmEarvinStocks.ScaleHeight) - gsngTopFrame - gsngTopCommand)-(frmEarvinStocks.ScaleWidth - 0.99 * gsngRightLevel, Abs(frmEarvinStocks.ScaleHeight) - gsngTopFrame - gsngTopCommand), RGB(200, 100, 0)
-	    gsngYshift = gsngBottomFrame
-	    For processFrame = frameCount To 2 Step -1
-	        gsngYshift = gsngYshift + mudtFrame(processFrame).sngHeight
-	        ' draw bottom line of current frame
-	        Line (gsngLeftLevel, gsngYshift)-(frmEarvinStocks.ScaleWidth - gsngRightLevel, gsngYshift), RGB(255, 255, 255)
-	    Next
-*/
+	public void DrawOutlineOfFrames2D(Graphics g, int frameCount) {
+		Graphics2D g2 = (Graphics2D) g;
+		// 外框
+		Shape outerFrame = new Rectangle2D.Double(outerFrameHDistance, outerFrameWDistance, this.getWidth() - 2 * outerFrameHDistance, this.getHeight() - 2 * outerFrameWDistance);
+		g2.draw(outerFrame);
+		// 右側邊框(顯示各Frame的技術指標資訊)
+		Shape rightFrame = new Rectangle2D.Double(this.getWidth() - outerFrameWDistance - rightFrameWDistance, 
+				(outerFrameHDistance + upperFrameHDistance), 
+				rightFrameWDistance, 
+				(this.getHeight() - 2 * outerFrameHDistance - upperFrameHDistance));	
+		g2.draw(rightFrame);
+		// 上方股市資訊顯示區
+		Shape upperFrame = new Rectangle2D.Double(outerFrameHDistance, 
+				outerFrameWDistance, 
+				(this.getWidth() - outerFrameWDistance * 2), 
+				upperFrameHDistance);	
+		g2.draw(upperFrame);
+		// 顯示主要股票K線圖(佔可使用之Frame高度 1/3)
+		int mainStockFrameHDistance = (this.getHeight() - upperFrameHDistance - outerFrameHDistance * 2) / 3;
+		//其它技術視窗(分享可使用之Frame高度 2/3)
+		int otherIndexFrameHDistance = (this.getHeight() - upperFrameHDistance - outerFrameHDistance * 2) / 3 * 2;
+		// 主要股票k線圖的底線 
+		Point2D p1 = new Point2D.Double(outerFrameHDistance, (outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance));
+		Point2D p2 = new Point2D.Double((this.getWidth() - rightFrameWDistance - outerFrameWDistance), (outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance));
+		Line2D KBottomLine = new Line2D.Double(p1, p2);
+		g2.setPaint(Color.gray);
+		g2.draw(KBottomLine);
 		
+		// 記錄可顯示股票資料的寬度
+		canUsedFrameWDistance = (this.getWidth() - rightFrameWDistance - outerFrameWDistance * 2);
+		System.out.println("canUsedFrameWDistance= " + canUsedFrameWDistance);
+		// 記錄可顯示股票資料各個frame的高度
+		Vector<FrameData> fds = new Vector();
+		fds.add(new FrameData(mainStockFrameHDistance, 0));	// 第1個是K線圖	
+		// 其它指標視窗的底線(最後一個frame的底線不用畫)
+		int startY = outerFrameWDistance + upperFrameHDistance + mainStockFrameHDistance;
+		for (int i = 0; i < (frameCount - 1); i++) {
+			startY += (otherIndexFrameHDistance / frameCount);
+			Point2D p3 = new Point2D.Double(outerFrameHDistance, startY);
+			Point2D p4 = new Point2D.Double((this.getWidth() - rightFrameWDistance - outerFrameWDistance), startY);
+			Line2D FramesBottomLine = new Line2D.Double(p3, p4);
+			g2.setPaint(Color.cyan);
+			g2.draw(FramesBottomLine);
+
+			fds.add(new FrameData(otherIndexFrameHDistance / frameCount, 0));
+		}
+		// Last one
+		fds.add(new FrameData(otherIndexFrameHDistance - otherIndexFrameHDistance * (frameCount-1) / frameCount, 0));
+		// DEBUG-MSG: 顯示每個frame的高度
+		for (int i = 0; i <= frameCount; i++) {
+			FrameData fd = fds.get(i);
+			System.out.println("Frame[" + i + "]= " + fd.getHeight());
+		}
 	}
 	
-	// 記錄要顯示的資料起始位置(gsngStartindex
+	// 記錄要顯示的資料起始位置(gsngStartindex)
 	public void SetDisplayStartIndex() {
 //		gsngStartIndex = IIf(Int(gsngEndIndex - frmEarvinStocks.Width / gsngBarWidth) >= 1, Int(gsngEndIndex - frmEarvinStocks.Width / gsngBarWidth), 1)
 	}
