@@ -14,6 +14,7 @@ import java.util.Vector;
 import javax.swing.JComponent;
 
 import tw.idv.earvin.stockpgms.javaswing.FrameData;
+import tw.idv.earvin.stockpgms.stocks_modules.indexes.StocksData;
 
 public class DisplayStocksForm extends JComponent {
 
@@ -74,6 +75,10 @@ public class DisplayStocksForm extends JComponent {
         End If
 */        
     	//-- 20180106 ADD END ---------------------------------
+		// 20180123 資料抓取不可以放這，要不然只要重畫，就會再抓一次；另外，這個method效能太差，要檢討
+//		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950208, 951231, "2002"); 
+//		System.out.println("counts= " + sd.length);
+
 		DrawStockForm(g, 1, "test");
 	}
 	
