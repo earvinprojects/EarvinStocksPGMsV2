@@ -3,7 +3,7 @@ package tw.idv.earvin.stockpgms.javaswing;
 import java.io.FileInputStream;
 import java.io.FileReader;
 
-public class TestReadDatFile {
+public class TestReadTxtFile {
 	// 日期,開盤,最高,最低,收盤, 成交量, 融資張數, 融券張數
 
 	public static void main(String[] args) {
