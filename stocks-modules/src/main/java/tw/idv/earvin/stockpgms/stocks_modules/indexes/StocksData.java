@@ -15,6 +15,7 @@ import java.sql.Statement;
 public class StocksData {
 	private long date;
 	private String stockNo;
+	private String stockName;
 	private double startPrice;
 	private double highPrice;
 	private double lowPrice;
@@ -31,12 +32,12 @@ public class StocksData {
 	private double openInterestStock; // 未平倉量
 
 	private static String SQL_SELECT_TAIWAN_DATA_POLARIS_BY_STOCK_NO = "SELECT A.DATE, A.STOCK_NO, A.STOCK_NAME, A.START_PRICE, A.HIGH_PRICE, A.LOW_PRICE, A.END_PRICE, A.VOLUME, "
-			+ "B.SHORT_SELLING, B.ADVANCE_DECLINE_LINE, B.UP_DOWN_FIRMS, B.FOREIGN_STOCK, B.SIT_AND_CB_STOCK, B.SELF_EMPLOYED_STOCK, B.LEGAL_PERSON_STOCK, B.OPEN_INTEREST_STOCK "
+			+ "B.MARGIN_TRADING, B.SHORT_SELLING, B.ADVANCE_DECLINE_LINE, B.UP_DOWN_FIRMS, B.FOREIGN_STOCK, B.SIT_AND_CB_STOCK, B.SELF_EMPLOYED_STOCK, B.LEGAL_PERSON_STOCK, B.OPEN_INTEREST_STOCK "
 			+ "FROM TAIWAN_DATA_POLARIS A " + "LEFT OUTER JOIN TAIWAN_DATA_POLARIS_STOCKS B "
 			+ "ON A.DATE = B.DATE AND A.STOCK_NO = B.STOCK_NO "
 			+ "WHERE A.STOCK_NO = ? ORDER BY A.DATE ";
 	private static String SQL_SELECT_TAIWAN_DATA_POLARIS_BY_STOCK_NO_AND_TWO_DATES = "SELECT A.DATE, A.STOCK_NO, A.STOCK_NAME, A.START_PRICE, A.HIGH_PRICE, A.LOW_PRICE, A.END_PRICE, A.VOLUME, "
-			+ "B.SHORT_SELLING, B.ADVANCE_DECLINE_LINE, B.UP_DOWN_FIRMS, B.FOREIGN_STOCK, B.SIT_AND_CB_STOCK, B.SELF_EMPLOYED_STOCK, B.LEGAL_PERSON_STOCK, B.OPEN_INTEREST_STOCK "
+			+ "B.MARGIN_TRADING, B.SHORT_SELLING, B.ADVANCE_DECLINE_LINE, B.UP_DOWN_FIRMS, B.FOREIGN_STOCK, B.SIT_AND_CB_STOCK, B.SELF_EMPLOYED_STOCK, B.LEGAL_PERSON_STOCK, B.OPEN_INTEREST_STOCK "
 			+ "FROM TAIWAN_DATA_POLARIS A " + "LEFT OUTER JOIN TAIWAN_DATA_POLARIS_STOCKS B "
 			+ "ON A.DATE = B.DATE AND A.STOCK_NO = B.STOCK_NO "
 			+ "WHERE A.DATE BETWEEN ? AND ? AND A.STOCK_NO = ? ORDER BY A.DATE ";
@@ -51,6 +52,14 @@ public class StocksData {
 
 	public String getStockNo() {
 		return stockNo;
+	}
+
+	public void setStockName(String v) {
+		stockName = v;
+	}
+
+	public String getStockName() {
+		return stockName;
 	}
 
 	public void setStockNo(String v) {
@@ -212,6 +221,7 @@ public class StocksData {
 				sd.setLowPrice(rs.getDouble("LOW_PRICE"));
 				sd.setEndPrice(rs.getDouble("END_PRICE"));
 				sd.setVolume(rs.getDouble("VOLUME"));
+				sd.setMarginTrading(rs.getDouble("MAGRIN_TRADING"));
 				sd.setShortSelling(rs.getDouble("SHORT_SELLING"));
 				sd.setAdvanceDeclineLine(rs.getDouble("ADVANCE_DECLINE_LINE"));
 				sd.setUpDownFirms(rs.getDouble("UP_DOWN_FIRMS"));
@@ -243,11 +253,11 @@ public class StocksData {
 		String theString = "";
 		theString = "Date= " + getDate() + ", StockNo= " + getStockNo() + ", StartPrice= " + getStartPrice()
 				+ ", HighPrice= " + getHighPrice() + ", LowPrice= " + getLowPrice() + ", EndPrice= " + getEndPrice()
-				+ ", Volume= " + getVolume() + ", ShortSelling = " + getShortSelling() + ", AdvanceDeclineLine= "
-				+ getAdvanceDeclineLine() + ", UpDownFirms= " + getUpDownFirms() + ", ForeignStock= "
-				+ getForeignStock() + ", SitAndCbStock= " + getSitAndCbStock() + ", SelfEmployedStock= "
-				+ getSelfEmployedStock() + ", LegalPersonStock= " + getLegalPersonStock() + ", OpenInterestStock= "
-				+ getOpenInterestStock();
+				+ ", Volume= " + getVolume() + ", MarginTrading = " + getMarginTrading() + ", ShortSelling = " + getShortSelling() 
+				+ ", AdvanceDeclineLine= " + getAdvanceDeclineLine() + ", UpDownFirms= " + getUpDownFirms() 
+				+ ", ForeignStock= " + getForeignStock() + ", SitAndCbStock= " + getSitAndCbStock() 
+				+ ", SelfEmployedStock= " + getSelfEmployedStock() + ", LegalPersonStock= " + getLegalPersonStock() 
+				+ ", OpenInterestStock= " + getOpenInterestStock();
 		return theString;
 	}
 

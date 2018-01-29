@@ -50,11 +50,11 @@ public class DisplayStocksForm extends JComponent {
 		Dimension frameSize = this.getSize();
 //		System.out.println("Frame Height= " + frameSize.getHeight() + ", Frame width= " + frameSize.getWidth());
 
-		int kBarWidth = 10;
+		int kBarWidth = 20;
 		int startDisplayRecord = 0;
-		int endDisplayRecord = 1000;
-		startDisplayRecord = endDisplayRecord -  (int) screenSize.getWidth() / kBarWidth;
-		System.out.println("startDisplayRecord= " + startDisplayRecord +", endDisplayRecord= " + endDisplayRecord);
+		int endDisplayRecord = 0;
+//		startDisplayRecord = endDisplayRecord -  (int) screenSize.getWidth() / kBarWidth;
+//		System.out.println("startDisplayRecord= " + startDisplayRecord +", endDisplayRecord= " + endDisplayRecord);
 
 		//-- 20180106 ADD STR ---------------------------------
         // 設定K-Bar
@@ -67,18 +67,21 @@ public class DisplayStocksForm extends JComponent {
         	' gsngBarwidth   : K-Bar的寬度
         	If gsngStartIndex > 1 Then
             	gsngStartIndex = Int(gsngEndIndex - frmEarvinStocks.Width / gsngBarWidth)
-            	Else	
+           	Else	
             	gsngEndIndex = gsngStartIndex + Int(frmEarvinStocks.Width / gsngBarWidth)
-            	End If
-            	Call DrawStockForm(gsngEndIndex, GetStockName(cboStocks.Text))
-            End If
+          	End If
+           	Call DrawStockForm(gsngEndIndex, GetStockName(cboStocks.Text))
         End If
 */        
     	//-- 20180106 ADD END ---------------------------------
-		// 20180123 資料抓取不可以放這，要不然只要重畫，就會再抓一次；另外，這個method效能太差，要檢討
-//		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950208, 951231, "2002"); 
-//		System.out.println("counts= " + sd.length);
-
+    	StocksData[] sds = TestReadTxtFile.getData();
+    	endDisplayRecord = sds.length;
+		if (startDisplayRecord > 1) {
+			startDisplayRecord = endDisplayRecord - (canUsedFrameWDistance / kBarWidth);
+		} else {
+			endDisplayRecord = startDisplayRecord + (canUsedFrameWDistance / kBarWidth);
+		}
+		System.out.println("startDisplayRecord= " + startDisplayRecord + ", endDisplayRecord= " + endDisplayRecord + ", canUsedFrameWDistance= " + canUsedFrameWDistance + ", kBarWidth= " + kBarWidth);
 		DrawStockForm(g, 1, "test");
 	}
 	
