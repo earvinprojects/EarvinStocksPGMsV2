@@ -24,7 +24,6 @@ public class DisplayStocksForm extends JComponent {
     public float gsngBottomFrame = 400;	// the height of bottom edge (最下面顯示年月文字的寬度-固定)
     public float gsngLeftLevel = 750;	// the width of left edge     (最左側顯示價格文字的寬度-固定)
     public float gsngRightLevel = 1750;	// the width of right edge    (最右側顯示指標文字的寬度-固定) 應是指最右側顯示技術指標值的寬度
-
     
 	//------------------
 	//-- 20180116 STR --
@@ -34,8 +33,15 @@ public class DisplayStocksForm extends JComponent {
     private int rightFrameWDistance = 150;
     private int upperFrameHDistance = 30;
     private int canUsedFrameWDistance = 0;	// 記錄可顯示股票資料的寬度
+    
+	private int kBarWidth = 20;
+	private int startDisplayRecord = 0;
+	private int endDisplayRecord = 0;
+
 	// 定義最多只能開10個frame
 	public FrameData frameDatas[] = new FrameData[10];
+	StocksData[] stocksData = null;	// 股票資料
+	IndexsData[] indexsData = null; // 股票技術指標資料
 	//------------------
 	//-- 20180116 STR --
 	//------------------
@@ -50,9 +56,6 @@ public class DisplayStocksForm extends JComponent {
 		Dimension frameSize = this.getSize();
 //		System.out.println("Frame Height= " + frameSize.getHeight() + ", Frame width= " + frameSize.getWidth());
 
-		int kBarWidth = 20;
-		int startDisplayRecord = 0;
-		int endDisplayRecord = 0;
 //		startDisplayRecord = endDisplayRecord -  (int) screenSize.getWidth() / kBarWidth;
 //		System.out.println("startDisplayRecord= " + startDisplayRecord +", endDisplayRecord= " + endDisplayRecord);
 
@@ -74,15 +77,16 @@ public class DisplayStocksForm extends JComponent {
         End If
 */        
     	//-- 20180106 ADD END ---------------------------------
-    	StocksData[] sds = TestReadTxtFile.getData();
-    	endDisplayRecord = sds.length;
+    	stocksData = TestReadTxtFile.getData();
+    	endDisplayRecord = stocksData.length;
 		if (startDisplayRecord > 1) {
 			startDisplayRecord = endDisplayRecord - (canUsedFrameWDistance / kBarWidth);
 		} else {
 			endDisplayRecord = startDisplayRecord + (canUsedFrameWDistance / kBarWidth);
 		}
 		System.out.println("startDisplayRecord= " + startDisplayRecord + ", endDisplayRecord= " + endDisplayRecord + ", canUsedFrameWDistance= " + canUsedFrameWDistance + ", kBarWidth= " + kBarWidth);
-		DrawStockForm(g, 1, "test");
+		// draw stock form
+		DrawStockForm(g, endDisplayRecord, "中鋼");
 	}
 	
 	// 繪出股票圖
@@ -102,6 +106,9 @@ public class DisplayStocksForm extends JComponent {
 //		SetEachFrameHigh(7);	// 設定各個frame高度
 //		DrawOutlineOfFrames(g, 7);	// 繪製frame外框
 		DrawOutlineOfFrames2D(g, 7);	// 繪製frame外框
+		SetDisplayStartIndex();
+		System.out.println("[SetDisplayStartIndex()] -- startDisplayRecord= " + startDisplayRecord + ", endDisplayRecord= " + endDisplayRecord + ", canUsedFrameWDistance= " + canUsedFrameWDistance + ", kBarWidth= " + kBarWidth);
+		DrawStockFormByStockType("日線", endDisplayRecord);
 	}
 	
 
@@ -209,9 +216,14 @@ public class DisplayStocksForm extends JComponent {
 		}
 	}
 	
-	// 記錄要顯示的資料起始位置(gsngStartindex)
+	// 記錄要顯示的資料起始位置(startDisplayRecord)
 	public void SetDisplayStartIndex() {
 //		gsngStartIndex = IIf(Int(gsngEndIndex - frmEarvinStocks.Width / gsngBarWidth) >= 1, Int(gsngEndIndex - frmEarvinStocks.Width / gsngBarWidth), 1)
+		if ((endDisplayRecord - (canUsedFrameWDistance / kBarWidth)) >= 0) {
+			startDisplayRecord = endDisplayRecord - (canUsedFrameWDistance / kBarWidth);
+		} else {
+			startDisplayRecord = 0;
+		}
 	}
 	
 	// 繪製要顯示的線圖是 日線 OR 週線 OR 月線
@@ -230,12 +242,20 @@ public class DisplayStocksForm extends JComponent {
 	        Call DrawFrameData(gudtStockMonth, gudtIndexMonth)
 	        Call DrawStockIndexes(gudtStockMonth, gudtIndexMonth, gintMonthIndex, displayEndIndex)
 	    End If
-*/
+*/		
+		if (stockType.equals("日線")) {
+			DrawFrameData(stocksData);
+//			DrawStockIndexes(gudtStockDay, gudtIndexDay, gintDayIndex, displayEndIndex)
+		} else if (stockType.equals("週線")) {
+			
+		} else if (stockType.equals("月線")) {
+			
+		}
 	}
 	
 	// 判斷要繪製的資料
 	// 要傳入stockData, indexData
-	public void DrawFrameData() {
+	public void DrawFrameData(StocksData[] sds, IndexsData[] ids) {
 /*	    Dim processFrame As Integer
 	    Dim frameCount As Integer
 	        
@@ -260,30 +280,14 @@ public class DisplayStocksForm extends JComponent {
 	                Call Chalk_MACD_Map(gudtStock, gudtIndex, processFrame)
 	            Case mQuantityMap ' 20100415 , Has problem ...
 	                Call Chalk_Quantity_Map(gudtStock, gudtIndex, processFrame)
-	         
-	            '--- 下面有空再改~~ 應該著重在預測分析模型才對!! 又不是要練寫程式說~~ (20100416) ----
-	            Case mKmap
-	                Call Chalk_K_Map(gudtStock, gudtIndex, processFrame)
-	            Case mStochRSImap
-	                Call Chalk_StochRSI_Map(gudtStock, gudtIndex, processFrame)
-	            Case mWRSImap
-	                Call Chalk_WRSI_Map(gudtStock, gudtIndex, processFrame)
-	            Case mWMSmap
-	                Call Chalk_William_Map(gudtStock, gudtIndex, processFrame)
-	            Case mRWMSmap
-	                Call Chalk_RWilliam_Map(gudtStock, gudtIndex, processFrame)
-	            Case mAccMap
-	                Call Chalk_Acc_Map(gudtStock, gudtIndex, processFrame)
-	            Case mTomeMap
-	                Call Chalk_Tome_Map(gudtStock, gudtIndex, processFrame)
-	            Case mGRGMap
-	                Call Chalk_GRG_MAP(gudtStock, gudtIndex, processFrame)
-	            Case mSignalMap
-	                Call Chalk_Signal_Map(gudtStock, gudtIndex, processFrame)
-	            Case Else
+            	Case mKmap
+                	Call Chalk_K_Map(gudtStock, gudtIndex, processFrame)
 	        End Select
 	    Next
-*/	
+*/
+		// 先實作k線圖
+		Chalk_K_Map(sds, ids, 0);
+
 	}
 	
 	
