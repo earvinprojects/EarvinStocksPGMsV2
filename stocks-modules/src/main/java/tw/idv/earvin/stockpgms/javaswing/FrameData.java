@@ -1,7 +1,7 @@
 package tw.idv.earvin.stockpgms.javaswing;
 
 public class FrameData {
-	private int height;
+	private double height;
 	private int attribute;
 	
 	public FrameData() {
@@ -9,16 +9,16 @@ public class FrameData {
 		attribute = 0;
 	}
 	
-	public FrameData(int h, int a) {
+	public FrameData(double h, int a) {
 		setHeight(h);
 		setAttribute(a);
 	}
 	
-	public int getHeight() {
+	public double getHeight() {
 		return height;
 	}
 	
-	public void setHeight(int v) {
+	public void setHeight(double v) {
 		height = v;
 	}
 	
