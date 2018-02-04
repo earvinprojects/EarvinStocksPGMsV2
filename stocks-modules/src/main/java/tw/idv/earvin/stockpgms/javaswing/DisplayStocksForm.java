@@ -4,12 +4,16 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.Line2D;
+import java.awt.BasicStroke;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Vector;
 
 import javax.swing.JComponent;
+
+//import com.sun.prism.BasicStroke;
 
 import tw.idv.earvin.stockpgms.javaswing.FrameData;
 import tw.idv.earvin.stockpgms.stocks_modules.indexes.StocksData;
@@ -52,9 +56,6 @@ public class DisplayStocksForm extends JComponent {
 	public FrameData frameDatas[] = new FrameData[10];
 	StocksData[] stocksData = null;	// 股票資料
 //	IndexsData[] indexsData = null; // 股票技術指標資料(20180131: 先不處理…)
-	//------------------
-	//-- 20180116 STR --
-	//------------------
      
 
 	public void paintComponent(Graphics g) {
@@ -64,24 +65,6 @@ public class DisplayStocksForm extends JComponent {
 //		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 //		Dimension frameSize = this.getSize();
 		
-		//-- 20180106 ADD STR ---------------------------------
-        // 設定K-Bar
-/*		If Abs(.Height) > 500 Then ' avoiding the happening of minimun window size
-        	.ScaleHeight = -.Height ' set the x and y axial
-        	.ScaleWidth = .Width
-        	.ScaleTop = .Height
-        	' gsngStartindex : 起始日期
-        	' gsngEndindex   : 結束日期
-        	' gsngBarwidth   : K-Bar的寬度
-        	If gsngStartIndex > 1 Then
-            	gsngStartIndex = Int(gsngEndIndex - frmEarvinStocks.Width / gsngBarWidth)
-           	Else	
-            	gsngEndIndex = gsngStartIndex + Int(frmEarvinStocks.Width / gsngBarWidth)
-          	End If
-           	Call DrawStockForm(gsngEndIndex, GetStockName(cboStocks.Text))
-        End If
-*/        
-    	//-- 20180106 ADD END ---------------------------------
     	stocksData = TestReadTxtFile.getData();
     	endDisplayRecord = stocksData.length;
 		if (startDisplayRecord > 1) {
@@ -98,22 +81,15 @@ public class DisplayStocksForm extends JComponent {
 	// endIndex 結束日期
 	// stockName 股票中文名稱
 	public void DrawStockForm(Graphics g, int endIndex, String stockName) {
-/*	    frameCount = cboFrameNum.Text ' 記錄目前的frame數目
- 		// 設定各個frame高度 (ok)
-	    Call SetEachFrameHigh(frameCount)
-	   	// 繪製frame外框 (ok)
-	    Call DrawOutlineOfFrames(frameCount)
-	    // 記錄要顯示的資料起始位置(gsngStartindex)
-	    Call SetDisplayStartIndex
-	    // 繪製要顯示的線圖是 日線 OR 週線 OR 月線
-	    Call DrawStockFormByStockType(cboStocksType.Text, displayEndIndex)
-*/
-//		SetEachFrameHigh(7);	// 設定各個frame高度
-//		DrawOutlineOfFrames(g, 7);	// 繪製frame外框
+//		SetEachFrameHigh(7);	// 設定各個frame高度(目前併在 DrawOutlineOfFrames2D() 函式中)
 		DrawOutlineOfFrames2D(g, frameCount);	// 繪製frame外框
 		SetDisplayStartIndex();
-		System.out.println("[SetDisplayStartIndex()] -- startDisplayRecord= " + startDisplayRecord + ", endDisplayRecord= " + endDisplayRecord + ", mainFrameWidthDistance= " + mainFrameWidthDistance + ", kBarWidth= " + kBarWidth);
-		DrawStockFormByStockType("日線", endDisplayRecord);
+		System.out.println("[DrawStockForm()] -- startDisplayRecord= " + startDisplayRecord + 
+				", endDisplayRecord= " + endDisplayRecord + 
+				", mainFrameHighDistance= " + mainFrameHighDistance + 
+				", mainFrameWidthDistance= " + mainFrameWidthDistance +
+				", kBarWidth= " + kBarWidth);
+		DrawStockFormByStockType(g, "日線", endDisplayRecord);
 	}
 	
 	// 繪製frame外框 (Write OK, 20180119)
@@ -180,7 +156,7 @@ public class DisplayStocksForm extends JComponent {
 	// 繪製要顯示的線圖是 日線 OR 週線 OR 月線
 	// stockType 日線 OR 週線 OR 月線
 	// displayEndIndex
-	public void DrawStockFormByStockType(String stockType, int displayEndIndex) {
+	public void DrawStockFormByStockType(Graphics g, String stockType, int displayEndIndex) {
 /*	    If stockType = "日線" Then
  			// 根據每個frame所選擇要顯示的指標來繪製圖形
 	        Call DrawFrameData(gudtStockDay, gudtIndexDay)
@@ -195,7 +171,7 @@ public class DisplayStocksForm extends JComponent {
 	    End If
 */		
 		if (stockType.equals("日線")) {
-			DrawFrameData(stocksData);
+			DrawFrameData(g, stocksData);
 //			DrawStockIndexes(gudtStockDay, gudtIndexDay, gintDayIndex, displayEndIndex)
 		} else if (stockType.equals("週線")) {
 			
@@ -206,17 +182,85 @@ public class DisplayStocksForm extends JComponent {
 	
 	// 判斷要繪製的資料
 	// 要傳入stockData, indexData(技術指標先略，不處理~~)
-	public void DrawFrameData(StocksData[] sd) {
+	public void DrawFrameData(Graphics g, StocksData[] sd) {
+		Graphics2D g2 = (Graphics2D) g;
+		
 		// Chalk_K_Map(sds, ids, 0);
 		// 判斷資料的高、低點值
-		double highPrice = -1;
-		double lowPrice = 99999;
-		for (int i = 0; i < sd.length; i++) {
-			if (highPrice < sd[i].getHighPrice())
-				highPrice = sd[i].getHighPrice();
-			if (lowPrice > sd[i].getLowPrice())
-				lowPrice = sd[i].getLowPrice();
+		double highestPrice = -1;
+		double lowestPrice = 99999;
+		System.out.println("[DrawFrameData()] -- startDisplayRecord= " + startDisplayRecord + ", endDisplayRecord= " + endDisplayRecord);
+		for (int i = startDisplayRecord; i <= endDisplayRecord ; i++) {
+			if (highestPrice < sd[i].getHighPrice())
+				highestPrice = sd[i].getHighPrice();
+			if (lowestPrice > sd[i].getLowPrice())
+				lowestPrice = sd[i].getLowPrice();
 		}		
+		System.out.println("[DrawFrameData()] -- highestPrice= " + highestPrice + ", lowestPrice= " + lowestPrice);
+		
+		//--  K-window 橫線 (2018.02.03) --//
+		Stroke stroke = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {2, 2}, 0);
+		Point2D p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + 10);
+		Point2D p2 = new Point2D.Double(mainFrameStartX + mainFrameWidthDistance, mainFrameStartY + 10);
+		Line2D KFrameLine = new Line2D.Double(p1, p2);
+		g2.setStroke(stroke);
+		g2.setPaint(Color.red);
+		g2.draw(KFrameLine);
+		
+		double h1 = (mainFrameHighDistance - 20) / 4.0;
+		for (int i = 1; i < 4; i++) {
+			p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + 10 + (h1*i));
+			p2 = new Point2D.Double(mainFrameStartX+mainFrameWidthDistance, mainFrameStartY+10+(h1*i));
+			KFrameLine = new Line2D.Double(p1, p2);
+			g2.setPaint(Color.darkGray);
+			g2.draw(KFrameLine);	
+		}
+
+		p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + mainFrameHighDistance - 10);
+		p2 = new Point2D.Double(mainFrameStartX+mainFrameWidthDistance, mainFrameStartY + mainFrameHighDistance - 10);
+		KFrameLine = new Line2D.Double(p1, p2);
+		g2.setPaint(Color.red);
+		g2.draw(KFrameLine);
+
+		//-- Draw K-Bar (2018.02.03) --//
+		System.out.println("[DrawFrameData()] -- Draw K-Bar START");
+		g2.setPaint(Color.DARK_GRAY);
+		for (int i = startDisplayRecord; i < endDisplayRecord ; i++) {
+			System.out.println("[DrawFrameData()] -- value= " + sd[i].printData());
+			double yy1 = 0, yy2 = 0, yy3 = 0;
+			if (sd[i].getStartPrice() == sd[i].getEndPrice()) {
+				yy1 = mainFrameHighDistance / (highestPrice - lowestPrice);	
+				yy3 = (highestPrice -sd[i].getStartPrice()) * yy1;
+				p1 = new Point2D.Double(mainFrameStartX + kBarWidth*i, mainFrameStartY + yy3);
+				p2 = new Point2D.Double(mainFrameStartX + kBarWidth*(i+1), mainFrameStartY + yy3);
+				System.out.println("[DrawFrameData()] -- p1.x= " + p1.getX() + ",p1.y= " +p1.getY());
+				System.out.println("[DrawFrameData()] -- p2.x= " + p2.getX() + ",p2.y= " +p2.getY());
+				Line2D KLine = new Line2D.Double(p1, p2);
+				g2.setPaint(Color.BLUE);
+				g2.draw(KLine);	
+			} else {
+				if (sd[i].getStartPrice() > sd[i].getEndPrice()) {
+					yy1 = mainFrameHighDistance / (highestPrice - lowestPrice);			
+					yy2 = (sd[i].getStartPrice() - sd[i].getEndPrice()) * yy1;	
+					yy3 = (highestPrice -sd[i].getStartPrice()) * yy1;
+					g2.setPaint(Color.BLUE);
+					System.out.println("[DrawFrameData()] -- yy1= " + yy1 + ",yy2= " + yy2);
+				} else {
+					yy1 = mainFrameHighDistance / (highestPrice - lowestPrice);			
+					yy2 = (sd[i].getEndPrice() - sd[i].getStartPrice()) * yy1;
+					yy3 = (highestPrice -sd[i].getEndPrice()) * yy1;
+					g2.setPaint(Color.red);
+				}
+				Shape kFrame = new Rectangle2D.Double(mainFrameStartX + kBarWidth*i, mainFrameStartY + yy3, kBarWidth, yy2);
+				System.out.println("[DrawFrameData()] -- mainFrameStartX= " + (mainFrameStartX + kBarWidth*i) + ", mainFrameStartY= " + (mainFrameStartY + yy1));
+				g2.draw(kFrame);				
+			}
+		}
+		
+/*		double yy = (highestPrice -sd[1].getStartPrice()) / (highestPrice - lowestPrice) * mainFrameHighDistance;
+		Shape kFrame = new Rectangle2D.Double(mainFrameStartX, mainFrameStartY + yy, kBarWidth, yy);
+		g2.draw(kFrame);
+*/	
 	}
 	
 	// 在顯示畫面的右方顯示一些技術指標的值
