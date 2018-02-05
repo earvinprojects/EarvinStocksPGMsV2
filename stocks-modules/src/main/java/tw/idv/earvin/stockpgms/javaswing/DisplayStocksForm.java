@@ -198,7 +198,7 @@ public class DisplayStocksForm extends JComponent {
 		}		
 		System.out.println("[DrawFrameData()] -- highestPrice= " + highestPrice + ", lowestPrice= " + lowestPrice);
 		
-		//--  MainFram(主要股票視窗< K-window> 視窗內畫 5 條虛線) 橫線(虛線)  --//
+		//--  MainFrame(主要股票視窗< K-window> 視窗內畫 5 條虛線) 橫線(虛線)  --//
 		Stroke stroke = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {2, 2}, 0);
 		Point2D p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + 10);	// 距離外框上緣下移 10 pixels
 		Point2D p2 = new Point2D.Double(mainFrameStartX + mainFrameWidthDistance, mainFrameStartY + 10); // 距離外框上緣下移 10 pixels
@@ -222,38 +222,63 @@ public class DisplayStocksForm extends JComponent {
 		g2.setPaint(Color.red);
 		g2.draw(KFrameLine);
 
-		//-- Draw K-Bar (2018.02.03) --//
+		//-- MainFrame : Draw K-Bar (2018.02.05) --//
 		System.out.println("[DrawFrameData()] -- Draw K-Bar START");
 		g2.setPaint(Color.DARK_GRAY);
 		for (int i = startDisplayRecord; i < endDisplayRecord ; i++) {
 			System.out.println("[DrawFrameData()] -- value= " + sd[i].printData());
-			double yy1 = 0, yy2 = 0, yy3 = 0;
+			double KBarStartX = 0;	// K-Bar左上角的x座標
+			double KBarStartY = 0;	// K-Bar左上角的y座標
+			double eachPricePixels = 0; // 指數(or 價格)轉換成像素的值
+			double KBarHigh = 0;	// 當天的K-Bar的高度
+			double barHigh2 = 0;	// (當天的開盤價 - 收盤價) 轉換成像素的值
+			double barHigh3 = 0;
+			double barHigh4 = 0;
+			eachPricePixels = mainFrameHighDistance / (highestPrice - lowestPrice);	
+
 			if (sd[i].getStartPrice() == sd[i].getEndPrice()) {
-				yy1 = mainFrameHighDistance / (highestPrice - lowestPrice);	
-				yy3 = (highestPrice -sd[i].getStartPrice()) * yy1;
-				p1 = new Point2D.Double(mainFrameStartX + kBarWidth*i, mainFrameStartY + yy3);
-				p2 = new Point2D.Double(mainFrameStartX + kBarWidth*(i+1), mainFrameStartY + yy3);
+				barHigh2 = (highestPrice - sd[i].getStartPrice()) * eachPricePixels;
+				KBarStartX = mainFrameStartX + kBarWidth * i;
+				KBarStartY = mainFrameStartY + barHigh2;
+				p1 = new Point2D.Double(KBarStartX, KBarStartY);
+				p2 = new Point2D.Double(KBarStartX + kBarWidth, KBarStartY);
 				System.out.println("[DrawFrameData()] -- p1.x= " + p1.getX() + ",p1.y= " +p1.getY());
 				System.out.println("[DrawFrameData()] -- p2.x= " + p2.getX() + ",p2.y= " +p2.getY());
 				Line2D KLine = new Line2D.Double(p1, p2);
 				g2.setPaint(Color.BLUE);
 				g2.draw(KLine);	
+				// 垂直線
+				barHigh3 = (highestPrice - sd[i].getHighPrice()) * eachPricePixels;
+				Point2D p3 = new Point2D.Double(KBarStartX + kBarWidth / 2, mainFrameStartY + barHigh3);
+				barHigh4 = (highestPrice - sd[i].getLowPrice()) * eachPricePixels;
+				Point2D p4 = new Point2D.Double(KBarStartX + kBarWidth / 2, mainFrameStartY + barHigh4);
+				Line2D KLine2 = new Line2D.Double(p3, p4);
+				g2.setPaint(Color.BLUE);
+				g2.draw(KLine2);					
 			} else {
 				if (sd[i].getStartPrice() > sd[i].getEndPrice()) {
-					yy1 = mainFrameHighDistance / (highestPrice - lowestPrice);			
-					yy2 = (sd[i].getStartPrice() - sd[i].getEndPrice()) * yy1;	
-					yy3 = (highestPrice -sd[i].getStartPrice()) * yy1;
+					KBarHigh = (sd[i].getStartPrice() - sd[i].getEndPrice()) * eachPricePixels;	
+					barHigh2 = (highestPrice -sd[i].getStartPrice()) * eachPricePixels;
 					g2.setPaint(Color.BLUE);
-					System.out.println("[DrawFrameData()] -- yy1= " + yy1 + ",yy2= " + yy2);
+					System.out.println("[DrawFrameData()] -- eachPricePixels= " + eachPricePixels + ",KBarHigh= " + KBarHigh);
 				} else {
-					yy1 = mainFrameHighDistance / (highestPrice - lowestPrice);			
-					yy2 = (sd[i].getEndPrice() - sd[i].getStartPrice()) * yy1;
-					yy3 = (highestPrice -sd[i].getEndPrice()) * yy1;
+					KBarHigh = (sd[i].getEndPrice() - sd[i].getStartPrice()) * eachPricePixels;
+					barHigh2 = (highestPrice -sd[i].getEndPrice()) * eachPricePixels;
 					g2.setPaint(Color.red);
 				}
-				Shape kFrame = new Rectangle2D.Double(mainFrameStartX + kBarWidth*i, mainFrameStartY + yy3, kBarWidth, yy2);
-				System.out.println("[DrawFrameData()] -- mainFrameStartX= " + (mainFrameStartX + kBarWidth*i) + ", mainFrameStartY= " + (mainFrameStartY + yy1));
-				g2.draw(kFrame);				
+				KBarStartX = mainFrameStartX + kBarWidth * i;
+				KBarStartY = mainFrameStartY + barHigh2;
+				Shape kFrame = new Rectangle2D.Double(KBarStartX, KBarStartY, kBarWidth, KBarHigh);
+				System.out.println("[DrawFrameData()] -- mainFrameStartX= " + (mainFrameStartX + kBarWidth*i) + ", mainFrameStartY= " + (mainFrameStartY + eachPricePixels));
+				g2.draw(kFrame);	
+				// 垂直線
+				barHigh3 = (highestPrice - sd[i].getHighPrice()) * eachPricePixels;
+				Point2D p3 = new Point2D.Double(KBarStartX + kBarWidth / 2, mainFrameStartY + barHigh3);
+				barHigh4 = (highestPrice - sd[i].getLowPrice()) * eachPricePixels;
+				Point2D p4 = new Point2D.Double(KBarStartX + kBarWidth / 2, mainFrameStartY + barHigh4);
+				Line2D KLine2 = new Line2D.Double(p3, p4);
+				g2.setPaint(Color.BLUE);
+				g2.draw(KLine2);					
 			}
 		}
 		
