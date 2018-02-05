@@ -198,26 +198,26 @@ public class DisplayStocksForm extends JComponent {
 		}		
 		System.out.println("[DrawFrameData()] -- highestPrice= " + highestPrice + ", lowestPrice= " + lowestPrice);
 		
-		//--  K-window 橫線 (2018.02.03) --//
+		//--  MainFram(主要股票視窗< K-window> 視窗內畫 5 條虛線) 橫線(虛線)  --//
 		Stroke stroke = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {2, 2}, 0);
-		Point2D p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + 10);
-		Point2D p2 = new Point2D.Double(mainFrameStartX + mainFrameWidthDistance, mainFrameStartY + 10);
+		Point2D p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + 10);	// 距離外框上緣下移 10 pixels
+		Point2D p2 = new Point2D.Double(mainFrameStartX + mainFrameWidthDistance, mainFrameStartY + 10); // 距離外框上緣下移 10 pixels
 		Line2D KFrameLine = new Line2D.Double(p1, p2);
 		g2.setStroke(stroke);
 		g2.setPaint(Color.red);
 		g2.draw(KFrameLine);
 		
-		double h1 = (mainFrameHighDistance - 20) / 4.0;
+		double eachKFrameLineDistance = (mainFrameHighDistance - 20) / 4.0;
 		for (int i = 1; i < 4; i++) {
-			p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + 10 + (h1*i));
-			p2 = new Point2D.Double(mainFrameStartX+mainFrameWidthDistance, mainFrameStartY+10+(h1*i));
+			p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + 10 + (eachKFrameLineDistance * i));
+			p2 = new Point2D.Double(mainFrameStartX+mainFrameWidthDistance, mainFrameStartY + 10 + (eachKFrameLineDistance * i));
 			KFrameLine = new Line2D.Double(p1, p2);
 			g2.setPaint(Color.darkGray);
 			g2.draw(KFrameLine);	
 		}
 
-		p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + mainFrameHighDistance - 10);
-		p2 = new Point2D.Double(mainFrameStartX+mainFrameWidthDistance, mainFrameStartY + mainFrameHighDistance - 10);
+		p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + mainFrameHighDistance - 10); // 距離外框底線上移 10 pixels
+		p2 = new Point2D.Double(mainFrameStartX+mainFrameWidthDistance, mainFrameStartY + mainFrameHighDistance - 10); // 距離外框底線上移 10 pixels
 		KFrameLine = new Line2D.Double(p1, p2);
 		g2.setPaint(Color.red);
 		g2.draw(KFrameLine);
