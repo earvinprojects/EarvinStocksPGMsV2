@@ -10,6 +10,7 @@ import java.awt.BasicStroke;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Vector;
+import java.text.*;
 
 import javax.swing.JComponent;
 
@@ -185,6 +186,14 @@ public class DisplayStocksForm extends JComponent {
 	public void DrawFrameData(Graphics g, StocksData[] sd) {
 		Graphics2D g2 = (Graphics2D) g;
 		
+		//-- 20180219 Test Draw String STR ----------------------------
+		g2.drawString("test string", 0, 100);
+		
+		
+		//-- 20180219 Test Draw String END ----------------------------
+		
+		
+		
 		// Chalk_K_Map(sds, ids, 0);
 		// 判斷資料的高、低點值
 		double highestPrice = -1;
@@ -280,6 +289,13 @@ public class DisplayStocksForm extends JComponent {
 				g2.setPaint(Color.BLUE);
 				g2.draw(KLine2);					
 			}
+			// 20180219 顯示最高價、最低價
+			if (sd[i].getHighPrice() == highestPrice) {
+				g2.drawString(Double.toString(highestPrice) , (float) KBarStartX, (float) (mainFrameStartY + barHigh3));
+			} else if (sd[i].getLowPrice() == lowestPrice ) {
+				g2.drawString(Double.toString(lowestPrice) , (float) KBarStartX, (float) (mainFrameStartY + barHigh4));
+			}
+			
 		}
 		
 /*		double yy = (highestPrice -sd[1].getStartPrice()) / (highestPrice - lowestPrice) * mainFrameHighDistance;
