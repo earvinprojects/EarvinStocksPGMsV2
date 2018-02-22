@@ -201,9 +201,12 @@ public class DisplayStocksForm extends JComponent {
 		System.out.println("[DrawFrameData()] -- highestPrice= " + highestPrice + ", lowestPrice= " + lowestPrice);
 		
 		//--  MainFrame(主要股票視窗< K-window> 視窗內畫 5 條虛線) 橫線(虛線)  --//
+		// 定義虛線畫筆
 		Stroke stroke = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {2, 2}, 0);
-		Point2D p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + 10);	// 距離外框上緣下移 15 pixels
+		// 虛線起、迄點(p1, p2)
+		Point2D p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + 10);	// 距離外框上緣下移 10 pixels
 		Point2D p2 = new Point2D.Double(mainFrameStartX + mainFrameWidthDistance, mainFrameStartY + 10); // 距離外框上緣下移 10 pixels
+		// 畫線
 		Line2D KFrameLine = new Line2D.Double(p1, p2);
 		g2.setStroke(stroke);
 		g2.setPaint(Color.red);
@@ -225,6 +228,8 @@ public class DisplayStocksForm extends JComponent {
 		g2.setPaint(Color.red);
 		g2.draw(KFrameLine);
 
+		//-----------------------------------------------------------------------------------------
+		
 		//-- MainFrame : Draw K-Bar (2018.02.05) --//
 		System.out.println("[DrawFrameData()] -- Draw K-Bar START");
 		g2.setPaint(Color.DARK_GRAY);
@@ -232,15 +237,16 @@ public class DisplayStocksForm extends JComponent {
 			System.out.println("[DrawFrameData()] -- value= " + sd[i].printData());
 			double KBarStartX = 0;	// K-Bar左上角的x座標
 			double KBarStartY = 0;	// K-Bar左上角的y座標
-			double eachPricePixels = 0; // 指數(or 價格)轉換成像素的值
 			double KBarHigh = 0;	// 當天的K-Bar的高度
 			double barHigh2 = 0;	// (當天的開盤價 - 收盤價) 轉換成像素的值
 			double barHigh3 = 0;
 			double barHigh4 = 0;
-			eachPricePixels = (mainFrameHighDistance) / (highestPrice - lowestPrice);	
+			double eachPricePixels = (mainFrameHighDistance) / (highestPrice - lowestPrice); // 指數(or 價格)轉換成像素的值
 
 			//-- draw K-Bar START -------------------------------------------------------------------------------------------
+			g2.setStroke(new BasicStroke(1));
 			if (sd[i].getStartPrice() == sd[i].getEndPrice()) {
+				g2.setPaint(Color.RED);
 				barHigh2 = (highestPrice - sd[i].getStartPrice()) * eachPricePixels;
 				KBarStartX = mainFrameStartX + kBarWidth * i;
 				KBarStartY = mainFrameStartY + barHigh2;
@@ -249,7 +255,6 @@ public class DisplayStocksForm extends JComponent {
 				System.out.println("[DrawFrameData()] -- p1.x= " + p1.getX() + ",p1.y= " +p1.getY());
 				System.out.println("[DrawFrameData()] -- p2.x= " + p2.getX() + ",p2.y= " +p2.getY());
 				Line2D KLine = new Line2D.Double(p1, p2);
-				g2.setPaint(Color.BLUE);
 				g2.draw(KLine);	
 				// 垂直線
 				barHigh3 = (highestPrice - sd[i].getHighPrice()) * eachPricePixels;
@@ -257,31 +262,29 @@ public class DisplayStocksForm extends JComponent {
 				barHigh4 = (highestPrice - sd[i].getLowPrice()) * eachPricePixels;
 				Point2D p4 = new Point2D.Double(KBarStartX + kBarWidth / 2, mainFrameStartY + barHigh4);
 				Line2D KLine2 = new Line2D.Double(p3, p4);
-				g2.setPaint(Color.BLUE);
 				g2.draw(KLine2);					
 			} else {
 				if (sd[i].getStartPrice() > sd[i].getEndPrice()) {
+					g2.setPaint(Color.GREEN);
 					KBarHigh = (sd[i].getStartPrice() - sd[i].getEndPrice()) * eachPricePixels;	
 					barHigh2 = (highestPrice -sd[i].getStartPrice()) * eachPricePixels;
-					g2.setPaint(Color.BLUE);
-					System.out.println("[DrawFrameData()] -- eachPricePixels= " + eachPricePixels + ",KBarHigh= " + KBarHigh);
 				} else {
+					g2.setPaint(Color.RED);
 					KBarHigh = (sd[i].getEndPrice() - sd[i].getStartPrice()) * eachPricePixels;
 					barHigh2 = (highestPrice -sd[i].getEndPrice()) * eachPricePixels;
-					g2.setPaint(Color.red);
 				}
 				KBarStartX = mainFrameStartX + kBarWidth * i;
 				KBarStartY = mainFrameStartY + barHigh2;
 				Shape kFrame = new Rectangle2D.Double(KBarStartX, KBarStartY, kBarWidth, KBarHigh);
 				System.out.println("[DrawFrameData()] -- mainFrameStartX= " + (mainFrameStartX + kBarWidth*i) + ", mainFrameStartY= " + (mainFrameStartY + eachPricePixels));
-				g2.draw(kFrame);	
+//				g2.draw(kFrame);	// 空心	
+				g2.fill(kFrame);	// 填滿
 				// 垂直線
 				barHigh3 = (highestPrice - sd[i].getHighPrice()) * eachPricePixels;
 				Point2D p3 = new Point2D.Double(KBarStartX + kBarWidth / 2, mainFrameStartY + barHigh3);
 				barHigh4 = (highestPrice - sd[i].getLowPrice()) * eachPricePixels;
 				Point2D p4 = new Point2D.Double(KBarStartX + kBarWidth / 2, mainFrameStartY + barHigh4);
 				Line2D KLine2 = new Line2D.Double(p3, p4);
-				g2.setPaint(Color.BLUE);
 				g2.draw(KLine2);					
 			}
 			//-- draw K-Bar END ---------------------------------------------------------------------------------------------
@@ -289,32 +292,20 @@ public class DisplayStocksForm extends JComponent {
 			
 			// 20180221 顯示最高價、最低價 (本來想用JLabel，但是不熟，而且可能影響到寫法，先用繪製文字處理)
 			// 20180221 位置顯示還有問題，要再處理
+			g2.setPaint(Color.BLUE);
 			if (sd[i].getHighPrice() == highestPrice) {
 				g2.drawString(Double.toString(highestPrice) , (float) KBarStartX, (float) (mainFrameStartY + barHigh3));
 			} else if (sd[i].getLowPrice() == lowestPrice ) {
 				g2.drawString(Double.toString(lowestPrice) , (float) KBarStartX, (float) (mainFrameStartY + barHigh4));
 			}
 			// 20180221 顯示K圖旁邊的指數值
-			System.out.println("mainFrameHighDistance= " + mainFrameHighDistance + ", highestPrice= " + highestPrice + ", lowPrice= " + lowestPrice + ", eachPricePixels= " + eachPricePixels + ", eachKFrameLineDistance= " + eachKFrameLineDistance);
-			double vv =highestPrice - 10*(highestPrice-lowestPrice)/mainFrameHighDistance;
-			System.out.println(vv);
-			g2.drawString(Double.toString(vv) , 0, (float) (mainFrameStartY + 10));
-//			vv = highestPrice - (10+eachPricePixels)/eachPricePixels;
-			vv =highestPrice - (10+eachKFrameLineDistance)*(highestPrice-lowestPrice)/mainFrameHighDistance;
-			System.out.println(vv);
-			g2.drawString(Double.toString(vv) , 0, (float) (mainFrameStartY + 10 + eachKFrameLineDistance));
-//			vv = highestPrice - (10+eachPricePixels*2)/eachPricePixels;
-			vv =highestPrice - (10+eachKFrameLineDistance*2)*(highestPrice-lowestPrice)/mainFrameHighDistance;
-			System.out.println(vv);
-			g2.drawString(Double.toString(vv) , 0, (float) (mainFrameStartY + 10 + eachKFrameLineDistance*2));
-//			vv = highestPrice - (10+eachPricePixels*3)/eachPricePixels;
-			vv =highestPrice - (10+eachKFrameLineDistance*3)*(highestPrice-lowestPrice)/mainFrameHighDistance;
-			System.out.println(vv);
-			g2.drawString(Double.toString(vv) , 0, (float) (mainFrameStartY + 10 + eachKFrameLineDistance*3));
-//			vv = highestPrice - (10+eachPricePixels*4)/eachPricePixels;
-			vv =highestPrice - (10+eachKFrameLineDistance*4)*(highestPrice-lowestPrice)/mainFrameHighDistance;
-			System.out.println(vv);
-			g2.drawString(Double.toString(vv) , 0, (float) (mainFrameStartY + 10 + eachKFrameLineDistance*4));			
+//			System.out.println("mainFrameHighDistance= " + mainFrameHighDistance + ", highestPrice= " + highestPrice + ", lowPrice= " + lowestPrice + ", eachPricePixels= " + eachPricePixels + ", eachKFrameLineDistance= " + eachKFrameLineDistance);
+			double indexValue = 0;
+			DecimalFormat df = new DecimalFormat(".##");
+			for (int j = 0; j < 5; j++) {
+				indexValue = highestPrice - (10 + eachKFrameLineDistance * j) * (highestPrice - lowestPrice) / mainFrameHighDistance;
+				g2.drawString(df.format(indexValue) , 0, (float) ((mainFrameStartY + 10 + eachKFrameLineDistance * j)));				
+			}
 		}
 		
 /*		double yy = (highestPrice -sd[1].getStartPrice()) / (highestPrice - lowestPrice) * mainFrameHighDistance;
