@@ -49,7 +49,7 @@ public class DisplayStocksForm extends JComponent {
     private double subFrameStartX = 0;
     private double subFrameStartY  = 0;
 
-	private double kBarWidth = 20;   
+	private double kBarWidth = 10;   
     private int startDisplayRecord = 0;
 	private int endDisplayRecord = 0;
 
@@ -290,6 +290,25 @@ public class DisplayStocksForm extends JComponent {
 			//-- draw K-Bar END ---------------------------------------------------------------------------------------------
 
 			
+			//-- 20180223 畫K線圖的垂直線(以月份來畫線) START ---------------------------------------------------
+			if (i < endDisplayRecord) {
+				String d1 = String.valueOf(sd[i].getDate());
+				String d2 = String.valueOf(sd[i+1].getDate());
+				d1 = d1.substring(d1.length()-4, d1.length()-2);
+				d2 = d2.substring(d2.length()-4, d2.length()-2);
+				System.out.println("d1= " + d1 + ", d2= " + d2);
+				if (!d1.equals(d2)) {
+					Point2D p5 = new Point2D.Double(KBarStartX, mainFrameStartY);
+//					Point2D p6 = new Point2D.Double(KBarStartX, (this.getHeight() - outerFrameUpperDistance - outerFrameBottomDistance - infoFrameHighDistance));
+					Point2D p6 = new Point2D.Double(KBarStartX, this.getHeight() - outerFrameUpperDistance);
+					Line2D KLine3 = new Line2D.Double(p5, p6);
+					g2.draw(KLine3);				
+				}
+			}
+				
+			//-- 20180223 畫K線圖的垂直線(以月份來畫線) END   ---------------------------------------------------
+			
+			
 			// 20180221 顯示最高價、最低價 (本來想用JLabel，但是不熟，而且可能影響到寫法，先用繪製文字處理)
 			// 20180221 位置顯示還有問題，要再處理
 			g2.setPaint(Color.BLUE);
@@ -298,20 +317,15 @@ public class DisplayStocksForm extends JComponent {
 			} else if (sd[i].getLowPrice() == lowestPrice ) {
 				g2.drawString(Double.toString(lowestPrice) , (float) KBarStartX, (float) (mainFrameStartY + barHigh4));
 			}
-			// 20180221 顯示K圖旁邊的指數值
-//			System.out.println("mainFrameHighDistance= " + mainFrameHighDistance + ", highestPrice= " + highestPrice + ", lowPrice= " + lowestPrice + ", eachPricePixels= " + eachPricePixels + ", eachKFrameLineDistance= " + eachKFrameLineDistance);
-			double indexValue = 0;
-			DecimalFormat df = new DecimalFormat(".##");
-			for (int j = 0; j < 5; j++) {
-				indexValue = highestPrice - (10 + eachKFrameLineDistance * j) * (highestPrice - lowestPrice) / mainFrameHighDistance;
-				g2.drawString(df.format(indexValue) , 0, (float) ((mainFrameStartY + 10 + eachKFrameLineDistance * j)));				
-			}
+		}		
+		// 20180221 顯示K圖旁邊的指數值
+//		System.out.println("mainFrameHighDistance= " + mainFrameHighDistance + ", highestPrice= " + highestPrice + ", lowPrice= " + lowestPrice + ", eachPricePixels= " + eachPricePixels + ", eachKFrameLineDistance= " + eachKFrameLineDistance);
+		double indexValue = 0;
+		DecimalFormat df = new DecimalFormat(".##");
+		for (int j = 0; j < 5; j++) {
+			indexValue = highestPrice - (10 + eachKFrameLineDistance * j) * (highestPrice - lowestPrice) / mainFrameHighDistance;
+			g2.drawString(df.format(indexValue) , 0, (float) ((mainFrameStartY + 10 + eachKFrameLineDistance * j)));				
 		}
-		
-/*		double yy = (highestPrice -sd[1].getStartPrice()) / (highestPrice - lowestPrice) * mainFrameHighDistance;
-		Shape kFrame = new Rectangle2D.Double(mainFrameStartX, mainFrameStartY + yy, kBarWidth, yy);
-		g2.draw(kFrame);
-*/	
 	}
 	
 	// 在顯示畫面的右方顯示一些技術指標的值
