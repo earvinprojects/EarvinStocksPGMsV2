@@ -15,13 +15,13 @@ import java.text.*;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import tw.idv.earvin.stockpgms.javaswing.EarvinStocksFormTest;
 //import com.sun.prism.BasicStroke;
 
 import tw.idv.earvin.stockpgms.javaswing.FrameData;
 import tw.idv.earvin.stockpgms.stocks_modules.indexes.StocksData;
 
 public class DisplayStocksForm extends JComponent {
-    
 	/**
 	 * 20180201 不知是要做啥用的？
 	 */
@@ -73,7 +73,15 @@ public class DisplayStocksForm extends JComponent {
 	StocksData[] stocksData = null;	// 股票資料
 //	IndexsData[] indexsData = null; // 股票技術指標資料(20180131: 先不處理…)
 	private int totalStocksCount = 0;	// 股票資料總筆數
-     
+
+	public DisplayStocksForm() {
+    	super();
+	}
+	
+	public DisplayStocksForm(Object o) {
+		frameCount = (int) o;
+	}
+	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		setForeground(Color.BLUE);
