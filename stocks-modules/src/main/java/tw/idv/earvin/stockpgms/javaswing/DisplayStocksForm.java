@@ -68,7 +68,7 @@ public class DisplayStocksForm extends JComponent {
 	private double kBarWidth = 10;		// K線圖的K-Bar預設寬度   
     private int startDisplayRecord = 0;	// 預設顯示於畫面上資料的起始位置
 	private int endDisplayRecord = 0;	// 預設顯示於畫面上資料的結束位置
-	private int frameCount = 5; // (暫定…) 定義最能開5個frame
+	public int frameCount = 5; // (暫定…) 定義最能開5個frame
 	public FrameData frameData[] = new FrameData[MAX_FRAME_COUNT];	// 儲存開啟frame的相關資料
 	StocksData[] stocksData = null;	// 股票資料
 //	IndexsData[] indexsData = null; // 股票技術指標資料(20180131: 先不處理…)
