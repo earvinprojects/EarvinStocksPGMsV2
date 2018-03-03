@@ -1,4 +1,4 @@
-package tw.idv.earvin.stockpgms.javaswing;
+package tw.idv.earvin.stockpgms.javaswing.v2;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -12,6 +12,9 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
 
+import tw.idv.earvin.stockpgms.javaswing.learning.TestReadTxtFile;
+import tw.idv.earvin.stockpgms.javaswing.v1.EarvinStocksFrameTest;
+import tw.idv.earvin.stockpgms.javaswing.v1.FrameData;
 import tw.idv.earvin.stockpgms.stocks_modules.indexes.StocksData;
 import javax.swing.JComponent;
 

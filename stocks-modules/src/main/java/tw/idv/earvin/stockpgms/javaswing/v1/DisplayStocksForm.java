@@ -1,4 +1,4 @@
-package tw.idv.earvin.stockpgms.javaswing;
+package tw.idv.earvin.stockpgms.javaswing.v1;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -15,10 +15,7 @@ import java.text.*;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import tw.idv.earvin.stockpgms.javaswing.EarvinStocksFormTest;
-//import com.sun.prism.BasicStroke;
-
-import tw.idv.earvin.stockpgms.javaswing.FrameData;
+import tw.idv.earvin.stockpgms.javaswing.learning.TestReadTxtFile;
 import tw.idv.earvin.stockpgms.stocks_modules.indexes.StocksData;
 
 public class DisplayStocksForm extends JComponent {

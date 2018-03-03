@@ -1,4 +1,4 @@
-package tw.idv.earvin.stockpgms.javaswing;
+package tw.idv.earvin.stockpgms.javaswing.v1;
 
 public class FrameData {
 	private double height;

@@ -1,4 +1,4 @@
-package tw.idv.earvin.stockpgms.javaswing;
+package tw.idv.earvin.stockpgms.javaswing.learning;
 
 import java.io.FileInputStream;
 import java.io.FileReader;

@@ -1,4 +1,4 @@
-package tw.idv.earvin.stockpgms.javaswing;
+package tw.idv.earvin.stockpgms.javaswing.v1;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
