@@ -101,7 +101,10 @@ public class DisplayStocksForm2 extends JComponent {
 
 		stocksData = TestReadTxtFile.getData();
 		totalStocksCount = stocksData.length;
-		endDisplayRecord = totalStocksCount;
+		endDisplayRecord = totalStocksCount - 1;
+//		mainFrameWidthDistance = 1200 - outerFrameLeftDistance - indexFrameWidthDistance - outerFrameRightDistance;
+//		startDisplayRecord = endDisplayRecord - (int) (mainFrameWidthDistance / kBarWidth);
+		
 		
 		initToolbar(toolbar);
 		add(toolbar, BorderLayout.NORTH);
@@ -139,12 +142,13 @@ public class DisplayStocksForm2 extends JComponent {
 		// endDisplayRecord= " + endDisplayRecord + ", mainFrameWidthDistance= " +
 		// mainFrameWidthDistance + ", kBarWidth= " + kBarWidth);
 		// 計算要顯示的資料起、迄位置
-		if (startDisplayRecord > 1) {
+/*
+		if (startDisplayRecord > 0) {
 			startDisplayRecord = endDisplayRecord - (int) (mainFrameWidthDistance / kBarWidth);
 		} else {
 			endDisplayRecord = startDisplayRecord + (int) (mainFrameWidthDistance / kBarWidth);
 		}
-
+*/
 		DrawStockForm(g, endDisplayRecord, "中鋼");
 	}
 
@@ -231,6 +235,9 @@ public class DisplayStocksForm2 extends JComponent {
 	// 記錄要顯示的資料起始位置(startDisplayRecord)
 	public void SetDisplayStartIndex() {
 		System.out.println("[SetDisplayStartIndex()] -- BEFORE : startDisplayRecord= " + startDisplayRecord + ", endDisplayRecord= " + endDisplayRecord);
+		if (endDisplayRecord == 0) {
+			endDisplayRecord = stocksData.length - 1;
+		}
 		if ((endDisplayRecord - (mainFrameWidthDistance / kBarWidth)) >= 0) {
 			startDisplayRecord = endDisplayRecord - (int) (mainFrameWidthDistance / kBarWidth);
 		} else {
@@ -319,7 +326,7 @@ public class DisplayStocksForm2 extends JComponent {
 		// System.out.println("[DrawFrameData()] -- Draw K-Bar START");
 		g2.setPaint(Color.DARK_GRAY);
 		for (int i = startDisplayRecord; i < endDisplayRecord; i++) {
-			// System.out.println("[DrawFrameData()] -- value= " + sd[i].printData());
+			System.out.println("[DrawFrameData()] -- Draw K-Bar, value= " + sd[i].printData());
 			double KBarStartX = 0; // K-Bar左上角的x座標
 			double KBarStartY = 0; // K-Bar左上角的y座標
 			double KBarHigh = 0; // 當天的K-Bar的高度
@@ -333,7 +340,7 @@ public class DisplayStocksForm2 extends JComponent {
 			if (sd[i].getStartPrice() == sd[i].getEndPrice()) {
 				g2.setPaint(Color.RED);
 				barHigh2 = (highestPrice - sd[i].getStartPrice()) * eachPricePixels;
-				KBarStartX = mainFrameStartX + kBarWidth * i;
+				KBarStartX = mainFrameStartX + kBarWidth * (i - startDisplayRecord + 1);	// 0306 this is error!!!!
 				KBarStartY = mainFrameStartY + barHigh2;
 				p1 = new Point2D.Double(KBarStartX, KBarStartY);
 				p2 = new Point2D.Double(KBarStartX + kBarWidth, KBarStartY);
@@ -356,11 +363,11 @@ public class DisplayStocksForm2 extends JComponent {
 					KBarHigh = (sd[i].getEndPrice() - sd[i].getStartPrice()) * eachPricePixels;
 					barHigh2 = (highestPrice - sd[i].getEndPrice()) * eachPricePixels;
 				}
-				KBarStartX = mainFrameStartX + kBarWidth * i;
+				KBarStartX = mainFrameStartX + kBarWidth * (i - startDisplayRecord + 1);	// 0306 this is error!!!!;
 				KBarStartY = mainFrameStartY + barHigh2;
 				Shape kFrame = new Rectangle2D.Double(KBarStartX, KBarStartY, kBarWidth, KBarHigh);
-//				System.out.println("[DrawFrameData()] -- mainFrameStartX= " + (mainFrameStartX + kBarWidth * i) + ", mainFrameStartY= "
-//						+ (mainFrameStartY + eachPricePixels));
+				System.out.println("[DrawFrameData()] -- Draw K-Bar, mainFrameStartX= " + (mainFrameStartX + kBarWidth * i) + ", mainFrameStartY= "
+						+ (mainFrameStartY + eachPricePixels));
 				// g2.draw(kFrame); // 空心
 				g2.fill(kFrame); // 填滿
 				// 垂直線

@@ -6,6 +6,9 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 
 public class ApplicationFrame extends JFrame {
+	final public int APP_FRAME_WIDTH = 1200;
+	final public int APP_FRAME_HIGHT = 800;
+	
 	public ApplicationFrame() {
 		this("ApplicationFrame v1.0");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -17,7 +20,7 @@ public class ApplicationFrame extends JFrame {
 	}
 
 	protected void createUI() {
-		setSize(1200, 800);
+		setSize(APP_FRAME_WIDTH, APP_FRAME_HIGHT);
 		center();
 	}
 
