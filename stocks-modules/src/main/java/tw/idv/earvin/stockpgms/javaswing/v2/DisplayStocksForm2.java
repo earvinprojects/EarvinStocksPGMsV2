@@ -43,12 +43,12 @@ public class DisplayStocksForm2 extends JComponent {
 	 **/
 
 	// -- 常數區 --//
-	final private double outerFrameUpperDistance = 38; // 需加上toolbar的高度(因為這個變數到處都有在用，所以數值先寫死)
-	final private double outerFrameBottomDistance = 25;
-	final private double outerFrameLeftDistance = 50;
-	final private double outerFrameRightDistance = 10;
-	final private double infoFrameHighDistance = 30;
-	final private double indexFrameWidthDistance = 150;
+	final private double OUTER_FRAME_UPPER_DISTANCE = 38; // 需加上toolbar的高度(因為這個變數到處都有在用，所以數值先寫死)
+	final private double OUTER_FRAME_BOTTOM_DISTANCE = 25;
+	final private double OUTER_FRAME_LEFT_DISTANCE = 50;
+	final private double OUTER_FRAME_RIGHT_DISTANCE = 10;
+	final private double INFO_FRAME_HIGH_DISTANCE = 30;
+	final private double INDEX_FRAME_WIDTH_DISTANCE = 150;
 	final private int MAX_FRAME_COUNT = 10;
 
 	Stroke strokeDottedLine = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 2, 2 }, 0);
@@ -60,16 +60,16 @@ public class DisplayStocksForm2 extends JComponent {
 	private double subFramesTotalHighDistance = 0;
 
 	// 最外方框的左上角座標(同 股票資訊顯示區左上角座標)
-	private double outerFrameStartX = outerFrameLeftDistance;
-	private double outerFrameStartY = outerFrameUpperDistance;
+	private double outerFrameStartX = OUTER_FRAME_LEFT_DISTANCE;
+	private double outerFrameStartY = OUTER_FRAME_UPPER_DISTANCE;
 	// 股票資訊顯示區左上角座標
-	private double infoFrameStartX = outerFrameLeftDistance;
-	private double infoFrameStartY = outerFrameUpperDistance;
+	private double infoFrameStartX = OUTER_FRAME_LEFT_DISTANCE;
+	private double infoFrameStartY = OUTER_FRAME_UPPER_DISTANCE;
 	// K線圖的左上角座標
-	private double mainFrameStartX = outerFrameLeftDistance;
-	private double mainFrameStartY = outerFrameStartY + infoFrameHighDistance;
+	private double mainFrameStartX = OUTER_FRAME_LEFT_DISTANCE;
+	private double mainFrameStartY = outerFrameStartY + INFO_FRAME_HIGH_DISTANCE;
 	// 右側的技術指標左上角座標
-	private double indexFrameStartX = 0; // 視窗寬度 - outerFrameRightDistance - indexFrameWidthDistance
+	private double indexFrameStartX = 0; // 視窗寬度 - OUTER_FRAME_RIGHT_DISTANCE - INDEX_FRAME_WIDTH_DISTANCE
 	private double indexFrameStartY = 0;
 	// 技術指標區第一個方框左上角座標
 	private double subFrameStartX = 0;
@@ -102,7 +102,7 @@ public class DisplayStocksForm2 extends JComponent {
 		stocksData = TestReadTxtFile.getData();
 		totalStocksCount = stocksData.length;
 		endDisplayRecord = totalStocksCount - 1;
-//		mainFrameWidthDistance = 1200 - outerFrameLeftDistance - indexFrameWidthDistance - outerFrameRightDistance;
+//		mainFrameWidthDistance = 1200 - OUTER_FRAME_LEFT_DISTANCE - INDEX_FRAME_WIDTH_DISTANCE - OUTER_FRAME_RIGHT_DISTANCE;
 //		startDisplayRecord = endDisplayRecord - (int) (mainFrameWidthDistance / kBarWidth);
 		
 		
@@ -117,7 +117,7 @@ public class DisplayStocksForm2 extends JComponent {
 		testButton4 = new JButton("Test4");
 		frameCounts = new JLabel("選擇方框數：");
 		selectFrameCounts = new JComboBox();
-		for (int i = 1; i <= 10; i++) {
+		for (int i = 1; i < MAX_FRAME_COUNT; i++) {
 			selectFrameCounts.addItem(i);
 		}
 		selectFrameCounts.setSelectedIndex(frameCount);
@@ -127,7 +127,7 @@ public class DisplayStocksForm2 extends JComponent {
 				repaint();
 			}
 		});
-		selectFrameCounts.setSelectedIndex(5); // 預設6個subFrame
+		selectFrameCounts.setSelectedIndex(frameCount); // 預設6個subFrame
 
 		controls.add(testButton1);
 		controls.add(testButton2);
@@ -167,12 +167,12 @@ public class DisplayStocksForm2 extends JComponent {
 		Graphics2D g2 = (Graphics2D) g;
 
 		// 決定各個數值
-		mainFrameWidthDistance = this.getWidth() - outerFrameLeftDistance - indexFrameWidthDistance - outerFrameRightDistance;
+		mainFrameWidthDistance = this.getWidth() - OUTER_FRAME_LEFT_DISTANCE - INDEX_FRAME_WIDTH_DISTANCE - OUTER_FRAME_RIGHT_DISTANCE;
 		// 顯示主要股票K線圖(佔可使用之Frame高度4/9)
-		mainFrameHighDistance = (this.getHeight() - outerFrameUpperDistance - outerFrameBottomDistance - infoFrameHighDistance) * 4 / 9;
+		mainFrameHighDistance = (this.getHeight() - OUTER_FRAME_UPPER_DISTANCE - OUTER_FRAME_BOTTOM_DISTANCE - INFO_FRAME_HIGH_DISTANCE) * 4 / 9;
 		// 其它技術視窗(分享可使用之Frame高度 5/9)
-		subFramesTotalHighDistance = this.getHeight() - outerFrameUpperDistance - infoFrameHighDistance - mainFrameHighDistance
-				- outerFrameBottomDistance;
+		subFramesTotalHighDistance = this.getHeight() - OUTER_FRAME_UPPER_DISTANCE - INFO_FRAME_HIGH_DISTANCE - mainFrameHighDistance
+				- OUTER_FRAME_BOTTOM_DISTANCE;
 
 		// 儲存Main Frame相關資訊
 		if (frameData[0] == null) {
@@ -182,13 +182,13 @@ public class DisplayStocksForm2 extends JComponent {
 		frameData[0].setY(mainFrameStartY);
 		frameData[0].setHeight(mainFrameHighDistance);
 
-		indexFrameStartX = outerFrameLeftDistance + mainFrameWidthDistance;
-		indexFrameStartY = outerFrameUpperDistance + infoFrameHighDistance;
+		indexFrameStartX = OUTER_FRAME_LEFT_DISTANCE + mainFrameWidthDistance;
+		indexFrameStartY = OUTER_FRAME_UPPER_DISTANCE + INFO_FRAME_HIGH_DISTANCE;
 		subFrameStartX = mainFrameStartX;
 
 		// 設定每一個subFrame(frameData索引值由1開始)的左上角座標
 		// subFrameStartY = mainFrameStartY + mainFrameHighDistance;
-		for (int i = 1; i <= frameCount; i++) {
+		for (int i = 1; i < frameCount; i++) {
 			subFrameStartY = mainFrameStartY + mainFrameHighDistance + subFramesTotalHighDistance / frameCount * (i - 1);
 			if (frameData[i] == null) {
 				frameData[i] = new FrameData();
@@ -199,16 +199,16 @@ public class DisplayStocksForm2 extends JComponent {
 
 		// 外框(起點座標：outerFrameStartX，outerFrameStartY)
 		Shape outerFrame = new Rectangle2D.Double(outerFrameStartX, outerFrameStartY,
-				this.getWidth() - outerFrameLeftDistance - outerFrameRightDistance,
-				this.getHeight() - outerFrameUpperDistance - outerFrameBottomDistance);
+				this.getWidth() - OUTER_FRAME_LEFT_DISTANCE - OUTER_FRAME_RIGHT_DISTANCE,
+				this.getHeight() - OUTER_FRAME_UPPER_DISTANCE - OUTER_FRAME_BOTTOM_DISTANCE);
 		g2.draw(outerFrame);
 		// 上方股市資訊顯示區(起點座標：同外框)
 		Shape infoFrame = new Rectangle2D.Double(infoFrameStartX, infoFrameStartY,
-				(this.getWidth() - outerFrameLeftDistance - outerFrameRightDistance), infoFrameHighDistance);
+				(this.getWidth() - OUTER_FRAME_LEFT_DISTANCE - OUTER_FRAME_RIGHT_DISTANCE), INFO_FRAME_HIGH_DISTANCE);
 		g2.draw(infoFrame);
 		// 右側邊框(顯示各Frame的技術指標資訊)
-		Shape indexFrame = new Rectangle2D.Double(indexFrameStartX, indexFrameStartY, indexFrameWidthDistance,
-				(this.getHeight() - outerFrameUpperDistance - outerFrameBottomDistance - infoFrameHighDistance));
+		Shape indexFrame = new Rectangle2D.Double(indexFrameStartX, indexFrameStartY, INDEX_FRAME_WIDTH_DISTANCE,
+				(this.getHeight() - OUTER_FRAME_UPPER_DISTANCE - OUTER_FRAME_BOTTOM_DISTANCE - INFO_FRAME_HIGH_DISTANCE));
 		g2.draw(indexFrame);
 		// 主要股票k線圖的底線 (即為第一個subFrame的左上角座標)
 		Point2D p1 = new Point2D.Double(frameData[1].getX(), frameData[1].getY());
@@ -219,7 +219,7 @@ public class DisplayStocksForm2 extends JComponent {
 
 		// 其它指標視窗的底線(最後一個frame的底線不用畫)
 //		System.out.println("[DrawOutlineOfFrames2D()] -- indexFrameStartX= " + indexFrameStartX);
-		for (int i = 1; i <= frameCount; i++) {
+		for (int i = 1; i < frameCount; i++) {
 //			System.out.println("[DrawOutlineOfFrames2D()] -- Frame[" + i + "]= " + frameData[i].getX() + ", " + frameData[i].getY() + ", "
 //					+ frameData[i].getHeight());
 			frameData[i].setHeight(subFramesTotalHighDistance / frameCount);
@@ -391,7 +391,7 @@ public class DisplayStocksForm2 extends JComponent {
 					double tradeDateStart = KBarStartX;
 					double tradeDateEnd = mainFrameStartY;
 					Point2D p5 = new Point2D.Double(tradeDateStart, mainFrameStartY);
-					tradeDateEnd = mainFrameStartY + (this.getHeight() - outerFrameUpperDistance - outerFrameBottomDistance - infoFrameHighDistance);
+					tradeDateEnd = mainFrameStartY + (this.getHeight() - OUTER_FRAME_UPPER_DISTANCE - OUTER_FRAME_BOTTOM_DISTANCE - INFO_FRAME_HIGH_DISTANCE);
 					Point2D p6 = new Point2D.Double(tradeDateStart, tradeDateEnd);
 					Line2D KLine3 = new Line2D.Double(p5, p6);
 					g2.setPaint(Color.GRAY);
