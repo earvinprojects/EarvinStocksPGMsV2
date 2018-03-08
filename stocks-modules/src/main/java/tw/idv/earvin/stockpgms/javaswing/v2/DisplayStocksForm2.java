@@ -43,6 +43,8 @@ public class DisplayStocksForm2 extends JComponent {
 	 **/
 
 	// -- 常數區 --//
+	final private double HIGHEST_VALUE = 99999;
+	final private double LOWEST_VALUE = -1;
 	final private double OUTER_FRAME_UPPER_DISTANCE = 38; // 需加上toolbar的高度(因為這個變數到處都有在用，所以數值先寫死)
 	final private double OUTER_FRAME_BOTTOM_DISTANCE = 25;
 	final private double OUTER_FRAME_LEFT_DISTANCE = 50;
@@ -102,10 +104,11 @@ public class DisplayStocksForm2 extends JComponent {
 		stocksData = TestReadTxtFile.getData();
 		totalStocksCount = stocksData.length;
 		endDisplayRecord = totalStocksCount - 1;
-//		mainFrameWidthDistance = 1200 - OUTER_FRAME_LEFT_DISTANCE - INDEX_FRAME_WIDTH_DISTANCE - OUTER_FRAME_RIGHT_DISTANCE;
-//		startDisplayRecord = endDisplayRecord - (int) (mainFrameWidthDistance / kBarWidth);
-		
-		
+		// mainFrameWidthDistance = 1200 - OUTER_FRAME_LEFT_DISTANCE -
+		// INDEX_FRAME_WIDTH_DISTANCE - OUTER_FRAME_RIGHT_DISTANCE;
+		// startDisplayRecord = endDisplayRecord - (int) (mainFrameWidthDistance /
+		// kBarWidth);
+
 		initToolbar(toolbar);
 		add(toolbar, BorderLayout.NORTH);
 	}
@@ -142,13 +145,11 @@ public class DisplayStocksForm2 extends JComponent {
 		// endDisplayRecord= " + endDisplayRecord + ", mainFrameWidthDistance= " +
 		// mainFrameWidthDistance + ", kBarWidth= " + kBarWidth);
 		// 計算要顯示的資料起、迄位置
-/*
-		if (startDisplayRecord > 0) {
-			startDisplayRecord = endDisplayRecord - (int) (mainFrameWidthDistance / kBarWidth);
-		} else {
-			endDisplayRecord = startDisplayRecord + (int) (mainFrameWidthDistance / kBarWidth);
-		}
-*/
+		/*
+		 * if (startDisplayRecord > 0) { startDisplayRecord = endDisplayRecord - (int)
+		 * (mainFrameWidthDistance / kBarWidth); } else { endDisplayRecord =
+		 * startDisplayRecord + (int) (mainFrameWidthDistance / kBarWidth); }
+		 */
 		DrawStockForm(g, endDisplayRecord, "中鋼");
 	}
 
@@ -189,7 +190,7 @@ public class DisplayStocksForm2 extends JComponent {
 		// 設定每一個subFrame(frameData索引值由1開始)的左上角座標
 		// subFrameStartY = mainFrameStartY + mainFrameHighDistance;
 		for (int i = 1; i < frameCount; i++) {
-			subFrameStartY = mainFrameStartY + mainFrameHighDistance + subFramesTotalHighDistance / frameCount * (i - 1);
+			subFrameStartY = mainFrameStartY + mainFrameHighDistance + subFramesTotalHighDistance / (frameCount - 1) * (i - 1);
 			if (frameData[i] == null) {
 				frameData[i] = new FrameData();
 			}
@@ -218,11 +219,11 @@ public class DisplayStocksForm2 extends JComponent {
 		g2.draw(KBottomLine);
 
 		// 其它指標視窗的底線(最後一個frame的底線不用畫)
-//		System.out.println("[DrawOutlineOfFrames2D()] -- indexFrameStartX= " + indexFrameStartX);
+		System.out.println("[DrawOutlineOfFrames2D()] -- indexFrameStartX= " + indexFrameStartX);
 		for (int i = 1; i < frameCount; i++) {
-//			System.out.println("[DrawOutlineOfFrames2D()] -- Frame[" + i + "]= " + frameData[i].getX() + ", " + frameData[i].getY() + ", "
-//					+ frameData[i].getHeight());
-			frameData[i].setHeight(subFramesTotalHighDistance / frameCount);
+			System.out.println("[DrawOutlineOfFrames2D()] -- Frame[" + i + "]= " + frameData[i].getX() + ", " + frameData[i].getY() + ", "
+					+ frameData[i].getHeight());
+			frameData[i].setHeight(subFramesTotalHighDistance / (frameCount - 1));
 
 			Point2D p3 = new Point2D.Double(frameData[i].getX(), frameData[i].getY());
 			Point2D p4 = new Point2D.Double(indexFrameStartX, frameData[i].getY());
@@ -232,18 +233,20 @@ public class DisplayStocksForm2 extends JComponent {
 		}
 	}
 
-	// 記錄要顯示的資料起始位置(startDisplayRecord)
+	// 記錄要顯示的資料起始位置(startDisplayRecord)及結束位置(endDisplayRecord)
 	public void SetDisplayStartIndex() {
-		System.out.println("[SetDisplayStartIndex()] -- BEFORE : startDisplayRecord= " + startDisplayRecord + ", endDisplayRecord= " + endDisplayRecord);
+		// System.out.println("[SetDisplayStartIndex()] -- BEFORE : startDisplayRecord=
+		// " + startDisplayRecord + ", endDisplayRecord= " + endDisplayRecord);
 		if (endDisplayRecord == 0) {
 			endDisplayRecord = stocksData.length - 1;
 		}
 		if ((endDisplayRecord - (mainFrameWidthDistance / kBarWidth)) >= 0) {
-			startDisplayRecord = endDisplayRecord - (int) (mainFrameWidthDistance / kBarWidth);
+			startDisplayRecord = endDisplayRecord - (int) (mainFrameWidthDistance / kBarWidth) + 1;
 		} else {
 			startDisplayRecord = 0;
 		}
-		System.out.println("[SetDisplayStartIndex()] -- AFTER : startDisplayRecord= " + startDisplayRecord + ", endDisplayRecord= " + endDisplayRecord);
+		// System.out.println("[SetDisplayStartIndex()] -- AFTER : startDisplayRecord= "
+		// + startDisplayRecord + ", endDisplayRecord= " + endDisplayRecord);
 	}
 
 	// 繪製要顯示的線圖是 日線 OR 週線 OR 月線
@@ -279,8 +282,8 @@ public class DisplayStocksForm2 extends JComponent {
 
 		// Chalk_K_Map(sds, ids, 0);
 		// 判斷資料的高、低點值
-		double highestPrice = -1;
-		double lowestPrice = 99999;
+		double highestPrice = LOWEST_VALUE;
+		double lowestPrice = HIGHEST_VALUE;
 		System.out.println("[DrawFrameData()] -- startDisplayRecord= " + startDisplayRecord + ", endDisplayRecord= " + endDisplayRecord);
 		for (int i = startDisplayRecord; i <= endDisplayRecord; i++) {
 			if (highestPrice < sd[i].getHighPrice())
@@ -291,10 +294,10 @@ public class DisplayStocksForm2 extends JComponent {
 		System.out.println("[DrawFrameData()] -- highestPrice= " + highestPrice + ", lowestPrice= " + lowestPrice);
 
 		// -- MainFrame(主要股票視窗< K-window> 視窗內畫 5 條虛線) 橫線(虛線) --//
-		// 虛線起、迄點(p1, p2)
-		Point2D p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + 10); // 距離外框上緣下移 10 pixels
-		Point2D p2 = new Point2D.Double(mainFrameStartX + mainFrameWidthDistance, mainFrameStartY + 10); // 距離外框上緣下移 10
-																											// pixels
+		// 虛線起、迄點(p1, p2) : 距離外框上緣下移 10 pixels
+		Point2D p1 = new Point2D.Double(mainFrameStartX, mainFrameStartY + 10); 
+		Point2D p2 = new Point2D.Double(mainFrameStartX + mainFrameWidthDistance, mainFrameStartY + 10); 
+ 
 		// 畫線
 		Line2D KFrameLine = new Line2D.Double(p1, p2);
 		g2.setStroke(strokeDottedLine);
@@ -325,7 +328,7 @@ public class DisplayStocksForm2 extends JComponent {
 		// -- MainFrame : Draw K-Bar (2018.02.05) -- //
 		// System.out.println("[DrawFrameData()] -- Draw K-Bar START");
 		g2.setPaint(Color.DARK_GRAY);
-		for (int i = startDisplayRecord; i < endDisplayRecord; i++) {
+		for (int i = startDisplayRecord; i <= endDisplayRecord; i++) {
 			System.out.println("[DrawFrameData()] -- Draw K-Bar, value= " + sd[i].printData());
 			double KBarStartX = 0; // K-Bar左上角的x座標
 			double KBarStartY = 0; // K-Bar左上角的y座標
@@ -340,7 +343,7 @@ public class DisplayStocksForm2 extends JComponent {
 			if (sd[i].getStartPrice() == sd[i].getEndPrice()) {
 				g2.setPaint(Color.RED);
 				barHigh2 = (highestPrice - sd[i].getStartPrice()) * eachPricePixels;
-				KBarStartX = mainFrameStartX + kBarWidth * (i - startDisplayRecord + 1);	// 0306 this is error!!!!
+				KBarStartX = mainFrameStartX + kBarWidth * (i - startDisplayRecord + 1); 
 				KBarStartY = mainFrameStartY + barHigh2;
 				p1 = new Point2D.Double(KBarStartX, KBarStartY);
 				p2 = new Point2D.Double(KBarStartX + kBarWidth, KBarStartY);
@@ -363,7 +366,9 @@ public class DisplayStocksForm2 extends JComponent {
 					KBarHigh = (sd[i].getEndPrice() - sd[i].getStartPrice()) * eachPricePixels;
 					barHigh2 = (highestPrice - sd[i].getEndPrice()) * eachPricePixels;
 				}
-				KBarStartX = mainFrameStartX + kBarWidth * (i - startDisplayRecord + 1);	// 0306 this is error!!!!;
+				// 0308 應該不用加1
+//				KBarStartX = mainFrameStartX + kBarWidth * (i - startDisplayRecord + 1); 
+				KBarStartX = mainFrameStartX + kBarWidth * (i - startDisplayRecord); 
 				KBarStartY = mainFrameStartY + barHigh2;
 				Shape kFrame = new Rectangle2D.Double(KBarStartX, KBarStartY, kBarWidth, KBarHigh);
 				System.out.println("[DrawFrameData()] -- Draw K-Bar, mainFrameStartX= " + (mainFrameStartX + kBarWidth * i) + ", mainFrameStartY= "
@@ -391,7 +396,8 @@ public class DisplayStocksForm2 extends JComponent {
 					double tradeDateStart = KBarStartX;
 					double tradeDateEnd = mainFrameStartY;
 					Point2D p5 = new Point2D.Double(tradeDateStart, mainFrameStartY);
-					tradeDateEnd = mainFrameStartY + (this.getHeight() - OUTER_FRAME_UPPER_DISTANCE - OUTER_FRAME_BOTTOM_DISTANCE - INFO_FRAME_HIGH_DISTANCE);
+					tradeDateEnd = mainFrameStartY
+							+ (this.getHeight() - OUTER_FRAME_UPPER_DISTANCE - OUTER_FRAME_BOTTOM_DISTANCE - INFO_FRAME_HIGH_DISTANCE);
 					Point2D p6 = new Point2D.Double(tradeDateStart, tradeDateEnd);
 					Line2D KLine3 = new Line2D.Double(p5, p6);
 					g2.setPaint(Color.GRAY);
@@ -400,7 +406,8 @@ public class DisplayStocksForm2 extends JComponent {
 					// 交易日期
 					g2.setPaint(Color.BLUE);
 					String tradeDate = String.valueOf(sd[i].getDate());
-					g2.drawString(tradeDate.substring(0, tradeDate.length() - 2), (float) tradeDateStart, (float) tradeDateEnd + 10);
+//					g2.drawString(tradeDate.substring(0, tradeDate.length() - 2), (float) tradeDateStart, (float) tradeDateEnd + 10);
+					g2.drawString(tradeDate.substring(0, tradeDate.length()), (float) tradeDateStart, (float) tradeDateEnd + 10);
 				}
 			}
 			// -- 20180223 畫K線圖的垂直線(以月份來畫線) END --//
