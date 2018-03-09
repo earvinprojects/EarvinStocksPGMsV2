@@ -386,9 +386,9 @@ public class DisplayStocksForm2 extends JComponent {
 			// -- draw K-Bar END --//
 
 			// -- 20180223 畫K線圖的垂直線(以月份來畫線) START --//
-			if (i < endDisplayRecord) {
+			if (i > 0 && i < endDisplayRecord) {
 				String d1 = String.valueOf(sd[i].getDate());
-				String d2 = String.valueOf(sd[i + 1].getDate());
+				String d2 = String.valueOf(sd[i - 1].getDate());
 				d1 = d1.substring(d1.length() - 4, d1.length() - 2);
 				d2 = d2.substring(d2.length() - 4, d2.length() - 2);
 				// System.out.println("d1= " + d1 + ", d2= " + d2);
@@ -403,11 +403,11 @@ public class DisplayStocksForm2 extends JComponent {
 					g2.setPaint(Color.GRAY);
 					g2.setStroke(strokeDottedLine);
 					g2.draw(KLine3);
-					// 交易日期
+					// 顯示交易日期
 					g2.setPaint(Color.BLUE);
 					String tradeDate = String.valueOf(sd[i].getDate());
-//					g2.drawString(tradeDate.substring(0, tradeDate.length() - 2), (float) tradeDateStart, (float) tradeDateEnd + 10);
-					g2.drawString(tradeDate.substring(0, tradeDate.length()), (float) tradeDateStart, (float) tradeDateEnd + 10);
+					g2.drawString(tradeDate.substring(0, tradeDate.length() - 2), (float) tradeDateStart, (float) tradeDateEnd + 10);
+//					g2.drawString(tradeDate.substring(0, tradeDate.length()), (float) tradeDateStart, (float) tradeDateEnd + 10);
 				}
 			}
 			// -- 20180223 畫K線圖的垂直線(以月份來畫線) END --//
