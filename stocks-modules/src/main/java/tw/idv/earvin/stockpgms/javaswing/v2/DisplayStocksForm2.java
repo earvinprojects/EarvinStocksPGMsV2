@@ -15,6 +15,8 @@ import java.awt.event.*;
 
 import tw.idv.earvin.stockpgms.javaswing.learning.TestReadTxtFile;
 import tw.idv.earvin.stockpgms.javaswing.v1.FrameData;
+import tw.idv.earvin.stockpgms.stocks_modules.indexes.IndexData;
+import tw.idv.earvin.stockpgms.stocks_modules.indexes.IndexsData;
 import tw.idv.earvin.stockpgms.stocks_modules.indexes.StocksData;
 
 import javax.swing.JButton;
@@ -77,7 +79,7 @@ public class DisplayStocksForm2 extends JComponent implements MouseMotionListene
 	public int frameCount = 5; // (暫定…) 定義最能開5個frame
 	public FrameData frameData[] = new FrameData[MAX_FRAME_COUNT]; // 儲存開啟frame的相關資料
 	StocksData[] stocksData = null; // 股票資料
-	// IndexsData[] indexsData = null; // 股票技術指標資料(20180131: 先不處理…)
+	IndexData indexsData = null; // 股票技術指標資料
 	private int totalStocksCount = 0; // 股票資料總筆數
 	private boolean showPriceVisibled = false;
 
@@ -100,7 +102,10 @@ public class DisplayStocksForm2 extends JComponent implements MouseMotionListene
 		setBackground(Color.white);
 		setLayout(new BorderLayout());
 
-		stocksData = TestReadTxtFile.getData();
+		// <2018.03.21> *** FOR TEST ***
+		stocksData = TestReadTxtFile.getStocksData();
+		indexsData = TestReadTxtFile.getIndexsData(stocksData);
+
 		totalStocksCount = stocksData.length;
 		endDisplayRecord = totalStocksCount - 1;
 		// mainFrameWidthDistance = 1200 - OUTER_FRAME_LEFT_DISTANCE -
@@ -114,7 +119,6 @@ public class DisplayStocksForm2 extends JComponent implements MouseMotionListene
 		addMouseMotionListener(this);
 	}
 
-	// 20180314
 	public void mouseMoved(MouseEvent e) {
 		// eventOutput("Mouse moved", e);
 		// location應該是以畫面左上角開始計算，會有問題~~
@@ -128,7 +132,7 @@ public class DisplayStocksForm2 extends JComponent implements MouseMotionListene
 		repaint();
 	}
 
-	// 20180314
+	// 目前未使用拖拉功能
 	public void mouseDragged(MouseEvent e) {
 		// eventOutput("Mouse dragged", e);
 	}
@@ -140,7 +144,7 @@ public class DisplayStocksForm2 extends JComponent implements MouseMotionListene
 		moveLast = new JButton("最後一筆");
 		showPrice = new JButton("查價");
 
-		// 20180312 設定移動資料筆數，但有問題~~
+		// 設定移動資料筆數
 		ActionListener movePosition = evt -> {
 			if (evt.getActionCommand().equals("第一筆")) {
 				endDisplayRecord = (int) (mainFrameWidthDistance / kBarWidth);
@@ -470,10 +474,10 @@ public class DisplayStocksForm2 extends JComponent implements MouseMotionListene
 			}
 			// -- 20180223 畫K線圖的垂直線(以月份來畫線) END --//
 
-			// 20180221 顯示最高價、最低價 (本來想用JLabel，但是不熟，而且可能影響到寫法，先用繪製文字處理)
+			// 顯示最高價、最低價 (本來想用JLabel，但是不熟，而且可能影響到寫法，先用繪製文字處理) -- 20180319 --
 			g2.setPaint(Color.BLUE);
 			if (sd[i].getHighPrice() == highestPrice) {
-				g2.drawString(Double.toString(highestPrice), (float) KBarStartX, (float) (mainFrameStartY + barHigh3));
+				g2.drawString(Double.toString(highestPrice), (float) KBarStartX, (float) (mainFrameStartY + barHigh3 + 10));
 			} else if (sd[i].getLowPrice() == lowestPrice) {
 				g2.drawString(Double.toString(lowestPrice), (float) KBarStartX, (float) (mainFrameStartY + barHigh4));
 			}

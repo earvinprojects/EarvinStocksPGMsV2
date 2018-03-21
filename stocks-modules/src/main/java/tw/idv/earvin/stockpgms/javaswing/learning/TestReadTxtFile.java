@@ -12,11 +12,12 @@ import java.util.List;
 import java.util.Vector;
 
 import tw.idv.earvin.stockpgms.stocks_modules.indexes.*;
+import tw.idv.earvin.stockpgms.stocks_modules.tables.TaiwanDataPolarisIndexesValues;
 
 public class TestReadTxtFile {
 	// 日期,開盤,最高,最低,收盤, 成交量, 融資張數, 融券張數
 
-	public static StocksData[] getData() {
+	public static StocksData[] getStocksData() {
 		StocksData[] stocksData = null;
 		try {
 			Path path = Paths.get("C:\\myData\\Dropbox\\myStocksPGMs\\V2.0\\PolarisDataToDat\\csv\\2002.csv");
@@ -44,11 +45,31 @@ public class TestReadTxtFile {
 		}
 		return stocksData;
 	}
+	
+	public static IndexData getIndexsData(StocksData[] sd) {
+		IndexData indexData = new IndexData();
+		indexData.setStockNo("2002");
+		
+		for (int i = 5; i < 360; i ++) {
+			if ( i == 5 || i == 20 || i == 60 || i == 120 || i == 240) {
+				TaiwanDataPolarisIndexesValues[] indexMAP = IndexMAP.calculateMAP(sd, i);
+				indexData.setIndexValues(indexMAP);							
+			}
+		}
+		Vector<TaiwanDataPolarisIndexesValues[]> vec = IndexKD.calculateKD(sd, 9);
+		for (int i = 0; i < vec.size(); i++) {
+			indexData.setIndexValues(vec.get(i));
+		}
+		return indexData;
+	}
 
 	public static void main(String[] args) {
-		StocksData[] sds = getData();
+		StocksData[] sds = getStocksData();
 		for (int i = 0; i < sds.length; i++) {
 			System.out.println((i + 1) + " : " + sds[i].printData());
 		}
+		
+		IndexData ind = getIndexsData(sds);
+		ind.printData();
 	}
 }

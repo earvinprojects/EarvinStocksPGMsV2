@@ -3,6 +3,7 @@ package tw.idv.earvin.stockpgms.stocks_modules.indexes;
 import java.util.Arrays;
 import java.util.Vector;
 
+import tw.idv.earvin.stockpgms.javaswing.learning.TestReadTxtFile;
 import tw.idv.earvin.stockpgms.stocks_modules.tables.TaiwanDataPolarisIndexesValues;
 
 /**
@@ -47,7 +48,8 @@ public class IndexsData {
 		IndexData indexData = new IndexData();
 		indexData.setStockNo("2002");
 
-		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950209, 950223, "2002");
+//		StocksData[] sd = StocksData.getStocksDataByStockNoAndDateBetween(950209, 950223, "2002");
+		StocksData[] sd = TestReadTxtFile.getStocksData();
 		TaiwanDataPolarisIndexesValues[] indexMAP = IndexMAP.calculateMAP(sd, 5);
 		indexData.setIndexValues(indexMAP);
 		Vector<TaiwanDataPolarisIndexesValues[]> vec = IndexKD.calculateKD(sd, 9);
