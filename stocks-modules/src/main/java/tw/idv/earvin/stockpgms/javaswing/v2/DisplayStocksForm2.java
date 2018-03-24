@@ -446,7 +446,7 @@ public class DisplayStocksForm2 extends JComponent implements MouseMotionListene
 
 			// -- draw K-Bar END --//
 
-			// -- 20180223 畫K線圖的垂直線(以月份來畫線) START --//
+			// -- 20180223 畫K線圖的垂直線(以月份來畫線) START -- //
 			if (i > 0 && i < endDisplayRecord) {
 				String d1 = String.valueOf(sd[i].getDate());
 				String d2 = String.valueOf(sd[i - 1].getDate());

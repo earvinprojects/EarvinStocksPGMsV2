@@ -86,7 +86,7 @@ public class DisplayStocksForm extends JComponent {
 //		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 //		Dimension frameSize = this.getSize();
 		
-    	stocksData = TestReadTxtFile.getData();
+    	stocksData = TestReadTxtFile.getStocksData();
 		totalStocksCount = stocksData.length;
     	endDisplayRecord = totalStocksCount;
     	// 計算要顯示的資料起、迄位置
