@@ -11,6 +11,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.awt.event.*;
 
 import tw.idv.earvin.stockpgms.javaswing.learning.TestReadTxtFile;
@@ -78,9 +79,10 @@ public class DisplayStocksForm2 extends JComponent implements MouseMotionListene
 	private int endDisplayRecord = 0; // 預設顯示於畫面上資料的結束位置
 	public int frameCount = 5; // (暫定…) 定義最能開5個frame
 	public FrameData frameData[] = new FrameData[MAX_FRAME_COUNT]; // 儲存開啟frame的相關資料
-	StocksData[] stocksData = null; // 股票資料
-	IndexData indexsData = null; // 股票技術指標資料
+	private StocksData[] stocksData = null; // 股票資料
+	private IndexsData indexsData = null; // 股票技術指標資料
 	private int totalStocksCount = 0; // 股票資料總筆數
+	private HashMap<String, Long> indexNumber = new HashMap<String, Long>();
 	private boolean showPriceVisibled = false;
 
 	private JPanel toolbar = new JPanel();
@@ -101,7 +103,7 @@ public class DisplayStocksForm2 extends JComponent implements MouseMotionListene
 	public DisplayStocksForm2() {
 		setBackground(Color.white);
 		setLayout(new BorderLayout());
-
+	
 		// <2018.03.21> *** FOR TEST ***
 		stocksData = TestReadTxtFile.getStocksData();
 		indexsData = TestReadTxtFile.getIndexsData(stocksData);
@@ -128,7 +130,8 @@ public class DisplayStocksForm2 extends JComponent implements MouseMotionListene
 		double tradeDateEnd = mainFrameStartY
 				+ (this.getHeight() - OUTER_FRAME_UPPER_DISTANCE - OUTER_FRAME_BOTTOM_DISTANCE - INFO_FRAME_HIGH_DISTANCE);
 		cp2 = new Point2D.Double(e.getX(), tradeDateEnd);
-		System.out.println(cp1.getX() + ", " + cp1.getY() + " <--> " + cp2.getX() + ", " + cp2.getY());
+		// System.out.println(cp1.getX() + ", " + cp1.getY() + " <--> " + cp2.getX() +
+		// ", " + cp2.getY());
 		repaint();
 	}
 
@@ -383,7 +386,7 @@ public class DisplayStocksForm2 extends JComponent implements MouseMotionListene
 		// -----------------------------------------------------------------------------------------
 
 		// -- MainFrame : Draw K-Bar (2018.02.05) -- //
-		System.out.println("[DrawFrameData()] -- Draw K-Bar START");
+		// System.out.println("[DrawFrameData()] -- Draw K-Bar START");
 		g2.setPaint(Color.DARK_GRAY);
 		for (int i = startDisplayRecord; i <= endDisplayRecord; i++) {
 			double KBarStartX = 0; // K-Bar左上角的x座標

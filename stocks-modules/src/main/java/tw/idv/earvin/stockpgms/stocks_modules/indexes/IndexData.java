@@ -22,7 +22,7 @@ public class IndexData {
 	}
 
 	public void setIndexValues(TaiwanDataPolarisIndexesValues[] v) {
-		TaiwanDataPolarisIndexesValues[] i = Arrays.copyOf(v, v.length);;
+		TaiwanDataPolarisIndexesValues[] i = Arrays.copyOf(v, v.length);
 		indexValues.add(i);
 	}
 	

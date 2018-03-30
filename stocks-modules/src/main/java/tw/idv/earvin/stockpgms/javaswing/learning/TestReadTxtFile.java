@@ -1,11 +1,8 @@
 package tw.idv.earvin.stockpgms.javaswing.learning;
 
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -46,21 +43,23 @@ public class TestReadTxtFile {
 		return stocksData;
 	}
 	
-	public static IndexData getIndexsData(StocksData[] sd) {
-		IndexData indexData = new IndexData();
-		indexData.setStockNo("2002");
+	public static IndexsData getIndexsData(StocksData[] sd) {
+		IndexsData indexsData = new IndexsData();
+		indexsData.setStockNo("2002");
 		
 		for (int i = 5; i < 360; i ++) {
 			if ( i == 5 || i == 20 || i == 60 || i == 120 || i == 240) {
-				TaiwanDataPolarisIndexesValues[] indexMAP = IndexMAP.calculateMAP(sd, i);
-				indexData.setIndexValues(indexMAP);							
+				TaiwanDataPolarisIndexesValues[] values = IndexMAP.calculateMAP(sd, i);
+				indexsData.setIndexValues(String.valueOf(1000+i), values);							
 			}
 		}
+
 		Vector<TaiwanDataPolarisIndexesValues[]> vec = IndexKD.calculateKD(sd, 9);
 		for (int i = 0; i < vec.size(); i++) {
-			indexData.setIndexValues(vec.get(i));
+			TaiwanDataPolarisIndexesValues[] values =  vec.get(i);
+			indexsData.setIndexValues(String.valueOf(values[0].getIndexCode()), values);							
 		}
-		return indexData;
+		return indexsData;
 	}
 
 	public static void main(String[] args) {
@@ -69,7 +68,7 @@ public class TestReadTxtFile {
 			System.out.println((i + 1) + " : " + sds[i].printData());
 		}
 		
-		IndexData ind = getIndexsData(sds);
-		ind.printData();
+		IndexsData ind = getIndexsData(sds);
+		ind.printAllData();
 	}
 }
