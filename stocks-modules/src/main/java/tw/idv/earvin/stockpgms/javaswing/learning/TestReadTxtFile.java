@@ -47,18 +47,50 @@ public class TestReadTxtFile {
 		IndexsData indexsData = new IndexsData();
 		indexsData.setStockNo("2002");
 		
+		// MAP
 		for (int i = 5; i < 360; i ++) {
 			if ( i == 5 || i == 20 || i == 60 || i == 120 || i == 240) {
-				TaiwanDataPolarisIndexesValues[] values = IndexMAP.calculateMAP(sd, i);
-				indexsData.setIndexValues(String.valueOf(1000+i), values);							
+				// MAP
+				TaiwanDataPolarisIndexesValues[] indexMAP = IndexMAP.calculateMAP(sd, i);
+				indexsData.setIndexValues(String.valueOf(indexMAP[0].getIndexCode()), indexMAP);							
+				// MAV
+				TaiwanDataPolarisIndexesValues[] indexMAV = IndexMAV.calculateMAV(sd, i);
+				indexsData.setIndexValues(String.valueOf(indexMAV[0].getIndexCode()), indexMAV);
 			}
+			
+			if ( i == 5 || i == 10 || i == 20) {
+				// PSY
+				TaiwanDataPolarisIndexesValues[] indexPSY = IndexPSY.calculatePSY(sd, i);
+				indexsData.setIndexValues(String.valueOf(indexPSY[0].getIndexCode()), indexPSY);							
+				// RSI
+				TaiwanDataPolarisIndexesValues[] indexRSI = IndexRSI.calculateRSI(sd, i);
+				indexsData.setIndexValues(String.valueOf(indexRSI[0].getIndexCode()), indexRSI);										
+				// RWMS
+				TaiwanDataPolarisIndexesValues[] indexRWMS = IndexRWMS.calculateRWMS(sd,i);
+				indexsData.setIndexValues(String.valueOf(indexRWMS[0].getIndexCode()), indexRWMS);							
+				// VR 
+				TaiwanDataPolarisIndexesValues[] indexVR = IndexVR.calculateVR(sd, i);
+				indexsData.setIndexValues(String.valueOf(indexVR[0].getIndexCode()), indexVR);							
+				// StochRSI
+//				TaiwanDataPolarisIndexesValues[] indexStochRSI = IndexStochRSI.calculateStochRSI(sd, i);
+//				indexsData.setIndexValues(String.valueOf(indexStochRSI[0].getIndexCode()), indexStochRSI);	
+			}	
 		}
-
-		Vector<TaiwanDataPolarisIndexesValues[]> vec = IndexKD.calculateKD(sd, 9);
-		for (int i = 0; i < vec.size(); i++) {
-			TaiwanDataPolarisIndexesValues[] values =  vec.get(i);
+		
+		// KD
+		Vector<TaiwanDataPolarisIndexesValues[]> vecKD = IndexKD.calculateKD(sd, 9);
+		for (int i = 0; i < vecKD.size(); i++) {
+			TaiwanDataPolarisIndexesValues[] values =  vecKD.get(i);
 			indexsData.setIndexValues(String.valueOf(values[0].getIndexCode()), values);							
 		}
+		
+		// MACD
+		Vector<TaiwanDataPolarisIndexesValues[]> vecMACD = IndexMACD.calculateMACD(sd, 12, 12, 26);
+		for (int i = 0; i < vecMACD.size(); i++) {
+			TaiwanDataPolarisIndexesValues[] values =  vecMACD.get(i);
+			indexsData.setIndexValues(String.valueOf(values[0].getIndexCode()), values);							
+		}
+
 		return indexsData;
 	}
 
