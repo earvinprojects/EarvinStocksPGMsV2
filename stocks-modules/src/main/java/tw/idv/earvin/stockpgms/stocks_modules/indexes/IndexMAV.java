@@ -7,7 +7,7 @@ public class IndexMAV {
 	public static TaiwanDataPolarisIndexesValues[] calculateMAV(StocksData[] sd, int indexDay) {
 		TaiwanDataPolarisIndexesValues[] indexData = null;
 		long indexCode = StocksIndexesName.getIndexCode("MAV_" + indexDay);
-		System.out.println("[IndexMAV.calculateMAV(...)] -- IndexCode(MAV, " + indexDay + ") = " + indexCode);
+//		System.out.println("[IndexMAV.calculateMAV(...)] -- IndexCode(MAV, " + indexDay + ") = " + indexCode);
 
 		if (sd.length > 0) {
 			indexData= new TaiwanDataPolarisIndexesValues[sd.length];
@@ -25,7 +25,7 @@ public class IndexMAV {
 					}
 					average /= indexDay;
 				}
-				System.out.println(sd[i].printData() + " -- the MAV average= " + average);
+//				System.out.println(sd[i].printData() + " -- the MAV average= " + average);
 				indexData[i] = new TaiwanDataPolarisIndexesValues();
 				indexData[i].setDate(sd[i].getDate());
 				indexData[i].setIndexCode(indexCode);

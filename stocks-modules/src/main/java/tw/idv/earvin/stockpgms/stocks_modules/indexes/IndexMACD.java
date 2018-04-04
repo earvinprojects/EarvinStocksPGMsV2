@@ -24,8 +24,7 @@ public class IndexMACD {
 		long macdIndexCode = StocksIndexesName.getIndexCode("MACD_" + macdIndexDay);
 		long difIndexCode = StocksIndexesName.getIndexCode("DIF_" + macdIndexDay);
 		long cyIndexCode = StocksIndexesName.getIndexCode("CY_" + macdIndexDay);
-		System.out.println("[IndexRWMS.calculateMACD(...)] -- IndexCode(MACD, " + macdIndexDay + "," + emaSIndexDay
-				+ "," + emaLIndexDay + ") = " + macdIndexCode);
+//		System.out.println("[IndexRWMS.calculateMACD(...)] -- IndexCode(MACD, " + macdIndexDay + "," + emaSIndexDay	+ "," + emaLIndexDay + ") = " + macdIndexCode);
 
 		if (sd.length > 0) {
 			macdIndexData = new TaiwanDataPolarisIndexesValues[sd.length];
@@ -47,8 +46,7 @@ public class IndexMACD {
 				macdValue = preMacdValue + (2 * (difValue - preMacdValue) / (1 + macdIndexDay));
 				cyValue = difValue - macdValue;
 
-				System.out.println(
-						sd[i].printData() + " -- MACD= " + macdValue + ", DIF= " + difValue + ", CY= " + cyValue);
+//				System.out.println(sd[i].printData() + " -- MACD= " + macdValue + ", DIF= " + difValue + ", CY= " + cyValue);
 				macdIndexData[i] = new TaiwanDataPolarisIndexesValues();
 				macdIndexData[i].setDate(sd[i].getDate());
 				macdIndexData[i].setIndexCode(macdIndexCode);

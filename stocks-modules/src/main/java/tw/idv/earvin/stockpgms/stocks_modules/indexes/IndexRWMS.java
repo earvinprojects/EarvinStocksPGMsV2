@@ -16,7 +16,7 @@ public class IndexRWMS {
 	public static TaiwanDataPolarisIndexesValues[] calculateRWMS(StocksData[] sd, int indexDay) {
 		TaiwanDataPolarisIndexesValues[] indexData = null;
 		long indexCode = StocksIndexesName.getIndexCode("RWMS_" + indexDay);
-		System.out.println("[IndexRWMS.calculateRWMS(...)] -- IndexCode(RWMS, " + indexDay + ") = " + indexCode);
+//		System.out.println("[IndexRWMS.calculateRWMS(...)] -- IndexCode(RWMS, " + indexDay + ") = " + indexCode);
 
 		if (sd.length > 0) {
 			indexData = new TaiwanDataPolarisIndexesValues[sd.length];
@@ -51,7 +51,7 @@ public class IndexRWMS {
 				} else {
 					wmsValue = 50;
 				}
-				System.out.println(sd[i].printData() + " -- RWMS= " + (100 - wmsValue));
+//				System.out.println(sd[i].printData() + " -- RWMS= " + (100 - wmsValue));
 				indexData[j] = new TaiwanDataPolarisIndexesValues();
 				indexData[j].setDate(sd[j].getDate());
 				indexData[j].setIndexCode(indexCode);

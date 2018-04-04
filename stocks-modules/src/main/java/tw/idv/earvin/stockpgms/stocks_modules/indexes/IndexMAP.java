@@ -15,7 +15,7 @@ public class IndexMAP {
 		String indexName = "MAP_" + indexDay;
 		TaiwanDataPolarisIndexesValues[] indexData = null;
 		long indexCode = StocksIndexesName.getIndexCode(indexName);
-		System.out.println("[IndexMAP.calculateMAP(...)] -- IndexCode(" + indexName + ") = " + indexCode);
+//		System.out.println("[IndexMAP.calculateMAP(...)] -- IndexCode(" + indexName + ") = " + indexCode);
 
 		if (sd.length > 0) {
 			indexData = new TaiwanDataPolarisIndexesValues[sd.length];
@@ -33,7 +33,7 @@ public class IndexMAP {
 					}
 					average /= indexDay;
 				}
-				System.out.println(sd[i].printData() + " -- MAP the average= " + average);
+//				System.out.println(sd[i].printData() + " -- MAP the average= " + average);
 				indexData[i] = new TaiwanDataPolarisIndexesValues();
 				indexData[i].setStockNo(sd[i].getStockNo());
 				indexData[i].setDate(sd[i].getDate());

@@ -9,7 +9,7 @@ public class IndexPSY {
 		String indexName = "PSY_" + indexDay;
 		TaiwanDataPolarisIndexesValues[] indexData = null;
 		long indexCode = StocksIndexesName.getIndexCode(indexName);
-		System.out.println("[IndexPSY.calculatePSY(...)] -- IndexCode(" + indexName + ") = " + indexCode);
+//		System.out.println("[IndexPSY.calculatePSY(...)] -- IndexCode(" + indexName + ") = " + indexCode);
 
 		if (sd.length > 0) {
 			indexData = new TaiwanDataPolarisIndexesValues[sd.length];
@@ -26,7 +26,7 @@ public class IndexPSY {
 					}
 					psyValue = upDay / indexDay * 100;
 				}
-				System.out.println(sd[i].printData() + " -- PSY the psyValue= " + psyValue);
+//				System.out.println(sd[i].printData() + " -- PSY the psyValue= " + psyValue);
 				indexData[i] = new TaiwanDataPolarisIndexesValues();
 				indexData[i].setStockNo(sd[i].getStockNo());
 				indexData[i].setDate(sd[i].getDate());

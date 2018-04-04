@@ -18,7 +18,7 @@ public class IndexVR {
 	public static TaiwanDataPolarisIndexesValues[] calculateVR(StocksData[] sd, int indexDay) {
 		TaiwanDataPolarisIndexesValues[] indexData = null;
 		long indexCode = StocksIndexesName.getIndexCode("VR_" + indexDay);
-		System.out.println("[IndexVR.calculateVR(...)] -- IndexVR(VR, " + indexDay + ") = " + indexCode);
+//		System.out.println("[IndexVR.calculateVR(...)] -- IndexVR(VR, " + indexDay + ") = " + indexCode);
 
 		if (sd.length > 0) {
 			indexData = new TaiwanDataPolarisIndexesValues[sd.length];
@@ -50,7 +50,7 @@ public class IndexVR {
 					}
 				}
 
-				System.out.println(sd[j].printData() + " -- the vrValue= " + vrValue);
+//				System.out.println(sd[j].printData() + " -- the vrValue= " + vrValue);
 				indexData[j] = new TaiwanDataPolarisIndexesValues();
 				indexData[j].setDate(sd[j].getDate());
 				indexData[j].setIndexCode(indexCode);

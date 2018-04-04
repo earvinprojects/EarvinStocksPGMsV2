@@ -8,7 +8,7 @@ public class IndexRSI {
 	public static TaiwanDataPolarisIndexesValues[] calculateRSI(StocksData[] sd, int indexDay) {
 		TaiwanDataPolarisIndexesValues[] indexData = null;
 		long indexCode = StocksIndexesName.getIndexCode("RSI_" + indexDay);
-		System.out.println("[IndexRSI.calculateRSI(...)] -- IndexCode(RSI, " + indexDay + ") = " + indexCode);
+//		System.out.println("[IndexRSI.calculateRSI(...)] -- IndexCode(RSI, " + indexDay + ") = " + indexCode);
 
 		if (sd.length > 0) {
 			indexData = new TaiwanDataPolarisIndexesValues[sd.length];
@@ -44,7 +44,7 @@ public class IndexRSI {
 				} else {
 					rsiValue = 50;
 				}
-				System.out.println(sd[j].printData() + " -- the rsiValue= " + rsiValue);
+//				System.out.println(sd[j].printData() + " -- the rsiValue= " + rsiValue);
 				indexData[j] = new TaiwanDataPolarisIndexesValues();
 				indexData[j].setDate(sd[j].getDate());
 				indexData[j].setIndexCode(indexCode);

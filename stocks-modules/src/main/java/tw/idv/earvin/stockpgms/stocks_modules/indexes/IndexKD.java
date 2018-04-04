@@ -12,8 +12,7 @@ public class IndexKD {
 		TaiwanDataPolarisIndexesValues[] dIndexData = null;
 		long kIndexCode = StocksIndexesName.getIndexCode("K_" + indexDay);
 		long dIndexCode = StocksIndexesName.getIndexCode("D_" + indexDay);
-		System.out.println(
-				"[IndexKD.calculateKD(...)] -- IndexKD(KD, " + indexDay + ") = " + kIndexCode + ", " + dIndexCode);
+//		System.out.println("[IndexKD.calculateKD(...)] -- IndexKD(KD, " + indexDay + ") = " + kIndexCode + ", " + dIndexCode);
 
 		if (sd.length > 0) {
 			kIndexData = new TaiwanDataPolarisIndexesValues[sd.length];
@@ -49,7 +48,7 @@ public class IndexKD {
 				DValue = prevDValue * 2 / 3 + KValue / 3;
 				prevKValue = KValue;
 				prevDValue = DValue;
-				System.out.println(sd[j].printData() + " -- the KValue= " + KValue + ", the DValue= " + DValue);
+//				System.out.println(sd[j].printData() + " -- the KValue= " + KValue + ", the DValue= " + DValue);
 				kIndexData[j] = new TaiwanDataPolarisIndexesValues();
 				kIndexData[j].setDate(sd[j].getDate());
 				kIndexData[j].setIndexCode(kIndexCode);
