@@ -15,9 +15,13 @@ public class TaiwanDataPolarisIndexesValues {
 	private double value;
 	private static Connection con = null;
 
-	private static String SQL_QUERY_BY_PK = "SELECT * FROM TAIWAN_DATA_POLARIS_INDEXES_VALUES WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
-	private static String SQL_UPDATE_BY_PK = "UPDATE TAIWAN_DATA_POLARIS_INDEXES_VALUES SET VALUE = ? WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
-	private static String SQL_INSERT = "INSERT INTO TAIWAN_DATA_POLARIS_INDEXES_VALUES (STOCK_NO, INDEX_CODE, DATE, VALUE) VALUES ( ?, ?, ?, ?) ";
+	// 20180610 talbe names change to 小寫
+//	private static String SQL_QUERY_BY_PK = "SELECT * FROM TAIWAN_DATA_POLARIS_INDEXES_VALUES WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
+//	private static String SQL_UPDATE_BY_PK = "UPDATE TAIWAN_DATA_POLARIS_INDEXES_VALUES SET VALUE = ? WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
+//	private static String SQL_INSERT = "INSERT INTO TAIWAN_DATA_POLARIS_INDEXES_VALUES (STOCK_NO, INDEX_CODE, DATE, VALUE) VALUES ( ?, ?, ?, ?) ";
+	private static String SQL_QUERY_BY_PK = "SELECT * FROM taiwan_data_polaris_indexes_values WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
+	private static String SQL_UPDATE_BY_PK = "UPDATE taiwan_data_polaris_indexes_values SET VALUE = ? WHERE STOCK_NO = ? AND INDEX_CODE = ? AND DATE = ? ";
+	private static String SQL_INSERT = "INSERT INTO taiwan_data_polaris_indexes_values (STOCK_NO, INDEX_CODE, DATE, VALUE) VALUES ( ?, ?, ?, ?) ";
 
 	public String getStockNo() {
 		return stockNo;
