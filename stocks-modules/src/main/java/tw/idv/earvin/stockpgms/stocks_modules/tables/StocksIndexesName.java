@@ -65,7 +65,9 @@ public class StocksIndexesName {
 	
 	public static long getIndexCode(String indexName) {
 		long indexCode = 0;
-		String SQL = "SELECT INDEX_CODE FROM STOCKS_INDEXES_NAME WHERE INDEX_NAME = ? ";
+		// 20180610 unix 有分大小寫，所以table要用小寫，要不然會找不到table
+//		String SQL = "SELECT INDEX_CODE FROM STOCKS_INDEXES_NAME WHERE INDEX_NAME = ? ";
+		String SQL = "SELECT INDEX_CODE FROM stocks_indexes_name WHERE INDEX_NAME = ? ";
 		try {
 			// 取得筆數
 			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/stocksdb", "root", "lin32ledi");

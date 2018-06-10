@@ -17,7 +17,12 @@ public class TestReadTxtFile {
 	public static StocksData[] getStocksData() {
 		StocksData[] stocksData = null;
 		try {
-			Path path = Paths.get("C:\\myData\\Dropbox\\myStocksPGMs\\V2.0\\PolarisDataToDat\\csv\\2002.csv");
+			//-- 20180610 路徑依不同作業系統要調整 --//
+			// Windows Path
+//			Path path = Paths.get("C:\\myData\\Dropbox\\myStocksPGMs\\V2.0\\PolarisDataToDat\\csv\\2002.csv");
+			// Unix Path
+			Path path = Paths.get("/home/earvin/Dropbox/myStocksPGMs/V2.0/PolarisDataToDat/csv/2002.csv");
+
 			Charset charset = Charset.forName("MS950");
 			List<String> lines;
 			Vector<StocksData> vec = new Vector<StocksData>();

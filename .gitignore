@@ -5,6 +5,13 @@ stocks-modules/.classpath
 stocks-modules/.project
 stocks-modules/.settings
 stocks-modules/target
+RemoteSystemsTempFiles/.project
+
+# git ignore file
+.gitignore
+
+# pom file
+stocks-modules/pom.xml
 
 # Compiled class file
 *.class
@@ -26,5 +33,5 @@ stocks-modules/target
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml hs_err_pid*
+
