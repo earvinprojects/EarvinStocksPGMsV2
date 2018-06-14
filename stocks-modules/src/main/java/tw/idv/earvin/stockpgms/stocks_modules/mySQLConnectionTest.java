@@ -6,7 +6,6 @@ import java.util.*;
 public class mySQLConnectionTest {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		try {
 //			Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1/stocksdb", "root", "lin32ledi");
 			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/stocksdb", "root", "lin32ledi");
@@ -26,5 +25,4 @@ public class mySQLConnectionTest {
 			e.printStackTrace();
 		}
 	}
-
 }

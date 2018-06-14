@@ -31,9 +31,14 @@ public class StocksData {
 	private double legalPersonStock; // 法人庫存
 	private double openInterestStock; // 未平倉量
 
+	/*
+	 * 《SQL Command補充說明》
+	 * 資料來源：taiwan_data_polaris --> 主要是取個股價格及成交量
+	 *        taiwan_data_polaris_stocks --> 主要是取融資、融券、法人庫存…等資料(注意，資料可能會有缺少!!)
+	 */
 	private static String SQL_SELECT_TAIWAN_DATA_POLARIS_BY_STOCK_NO = "SELECT A.DATE, A.STOCK_NO, A.STOCK_NAME, A.START_PRICE, A.HIGH_PRICE, A.LOW_PRICE, A.END_PRICE, A.VOLUME, "
 			+ "B.MARGIN_TRADING, B.SHORT_SELLING, B.ADVANCE_DECLINE_LINE, B.UP_DOWN_FIRMS, B.FOREIGN_STOCK, B.SIT_AND_CB_STOCK, B.SELF_EMPLOYED_STOCK, B.LEGAL_PERSON_STOCK, B.OPEN_INTEREST_STOCK "
-			+ "FROM TAIWAN_DATA_POLARIS A " + "LEFT OUTER JOIN TAIWAN_DATA_POLARIS_STOCKS B "
+			+ "FROM taiwan_data_polaris A " + "LEFT OUTER JOIN taiwan_data_polaris_stocks B "
 			+ "ON A.DATE = B.DATE AND A.STOCK_NO = B.STOCK_NO "
 			+ "WHERE A.STOCK_NO = ? ORDER BY A.DATE ";
 	private static String SQL_SELECT_TAIWAN_DATA_POLARIS_BY_STOCK_NO_AND_TWO_DATES = "SELECT A.DATE, A.STOCK_NO, A.STOCK_NAME, A.START_PRICE, A.HIGH_PRICE, A.LOW_PRICE, A.END_PRICE, A.VOLUME, "
